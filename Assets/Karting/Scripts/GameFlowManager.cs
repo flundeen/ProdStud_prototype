@@ -119,6 +119,8 @@ public class GameFlowManager : MonoBehaviour
         if (gameState != GameState.Play)
         {
             elapsedTimeBeforeEndScene += Time.deltaTime;
+            /* Game Countdown code
+            
             if(elapsedTimeBeforeEndScene >= endSceneLoadDelay)
             {
 
@@ -129,13 +131,9 @@ public class GameFlowManager : MonoBehaviour
                 float volume = Mathf.Clamp(1 - volumeRatio, 0, 1);
                 AudioUtility.SetMasterVolume(volume);
 
-                // See if it's time to load the end scene (after the delay)
-                if (Time.time >= m_TimeLoadEndGameScene)
-                {
-                    SceneManager.LoadScene(m_SceneToLoad);
-                    gameState = GameState.Play;
-                }
-            }
+                SceneManager.LoadScene(m_SceneToLoad);
+                gameState = GameState.Play;
+            }*/
         }
         else
         {
