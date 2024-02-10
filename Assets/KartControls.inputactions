@@ -47,13 +47,22 @@
                     "id": "81d9e798-8a71-4cf5-8f4b-d513421af315",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Gadget",
                     "type": "Button",
                     "id": "9f36b993-ca9c-4e6c-8c4c-34397edff908",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MenuToggle",
+                    "type": "Button",
+                    "id": "96123040-cef8-4b10-b5a5-cbd3640267c0",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -97,7 +106,7 @@
                 {
                     "name": "",
                     "id": "e03f6d91-b1ef-4c4b-9d9d-823ad185c45e",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -174,7 +183,7 @@
                 {
                     "name": "",
                     "id": "cef833eb-0786-4ff3-a51a-00cb496f1839",
-                    "path": "<Gamepad>/rightShoulder",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -206,8 +215,8 @@
                 },
                 {
                     "name": "",
-                    "id": "f56257a8-5517-4f2a-a0e8-7e0448130069",
-                    "path": "<Mouse>/position",
+                    "id": "e2a8ff53-f6e3-48ec-92a9-671862e38dbd",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -217,12 +226,23 @@
                 },
                 {
                     "name": "",
-                    "id": "e2a8ff53-f6e3-48ec-92a9-671862e38dbd",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "1d921cbc-2e06-4ec6-9647-896fa0e98c70",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Aim",
+                    "action": "MenuToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e6631aa-4512-4938-af22-39eb3db21d8b",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MenuToggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

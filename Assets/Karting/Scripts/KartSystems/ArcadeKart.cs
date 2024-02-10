@@ -74,9 +74,6 @@ namespace KartGame.KartSystems
 
         public Rigidbody Rigidbody { get; private set; }
         public InputData Input     { get; private set; }
-        private float accelVal = 0;
-        private float brakeVal = 0;
-        private float turnVal = 0;
         public float AirPercent    { get; private set; }
         public float GroundPercent { get; private set; }
 
@@ -158,8 +155,13 @@ namespace KartGame.KartSystems
         [Tooltip("Which layers the wheels will detect.")]
         public LayerMask GroundLayers = Physics.DefaultRaycastLayers;
 
+        Camera camera;
+
         // the input sources that can control the kart
-        IInput[] m_Inputs;
+        private float accelVal = 0;
+        private float brakeVal = 0;
+        private float turnVal = 0;
+        private bool isWeaponActive = false;
 
         const float k_NullInput = 0.01f;
         const float k_NullSpeed = 0.01f;
@@ -184,6 +186,9 @@ namespace KartGame.KartSystems
         Vector3 m_LastCollisionNormal;
         bool m_HasCollision;
         bool m_InAir = false;
+
+        // Event messages
+        public event EventHandler RaiseMenuToggle;
 
         public void AddPowerup(StatPowerup statPowerup) => m_ActivePowerupList.Add(statPowerup);
         public void SetCanMove(bool move) => m_CanMove = move;
@@ -238,7 +243,6 @@ namespace KartGame.KartSystems
         void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
-            m_Inputs = GetComponents<IInput>();
 
             UpdateSuspensionParams(FrontLeftWheel);
             UpdateSuspensionParams(FrontRightWheel);
@@ -266,6 +270,8 @@ namespace KartGame.KartSystems
                     Instantiate(NozzleVFX, nozzle, false);
                 }
             }
+
+            camera = transform.GetChild(0).GetChild(0).GetComponent<Camera>();
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -332,38 +338,50 @@ namespace KartGame.KartSystems
             WantsToDrift = false;
 
             // gather nonzero input from our sources
-            for (int i = 0; i < m_Inputs.Length; i++)
+            Input = new InputData 
             {
-                Input = new InputData 
-                {
-                    Accelerate = accelVal > 0,
-                    Brake = brakeVal > 0,
-                    TurnInput = turnVal
-                };
-                WantsToDrift = Input.Brake && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
-            }
+                Accelerate = accelVal > 0,
+                Brake = brakeVal > 0,
+                TurnInput = turnVal
+            };
+            WantsToDrift = Input.Brake && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
         }
 
         // New input methods
-        public void OnAccelerate(InputValue val)
+        void OnAccelerate(InputValue val)
         {
-            accelVal = val;
+            accelVal = val.Get<float>();
         }
-        public void OnBrake(InputValue val)
+        void OnBrake(InputValue val)
         {
-            brakeVal = val;
+            brakeVal = val.Get<float>();
         }
-        public void OnTurn(InputValue val)
+        void OnTurn(InputValue val)
         {
-            turnVal = val;
+            turnVal = val.Get<float>();
         }
-        public void OnPrimary()
+        void OnAim(InputValue val)
         {
-            Debug.Log("Firing Primary!");
+            Vector2 offset = val.Get<Vector2>();
+
+            camera.transform.localPosition = new Vector3(offset.x, 0, offset.y) * 2;
         }
-        public void OnGadget()
+        void OnPrimary(InputValue val)
+        {
+            isWeaponActive = !isWeaponActive;
+
+            if (isWeaponActive)
+                Debug.Log("Firing Primary!");
+            else
+                Debug.Log("Stopping Primary!");
+        }
+        void OnGadget()
         {
             Debug.Log("Activating Gadget!");
+        }
+        void OnMenuToggle()
+        {
+            RaiseMenuToggle(this, new EventArgs());
         }
 
         void TickPowerups()

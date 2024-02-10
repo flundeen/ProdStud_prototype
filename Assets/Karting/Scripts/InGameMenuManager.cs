@@ -38,40 +38,17 @@ public class InGameMenuManager : MonoBehaviour
 
     private void Update()
     {
-        
-        if (Input.GetButtonDown(GameConstants.k_ButtonNamePauseMenu)
-            || (menuRoot.activeSelf && Input.GetButtonDown(GameConstants.k_ButtonNameCancel)))
-        {
-            if (controlImage.activeSelf)
-            {
-                controlImage.SetActive(false);
-                return;
-            }
 
-            SetPauseMenuActivation(!menuRoot.activeSelf);
-
-        }
-
-        if (Input.GetAxisRaw(GameConstants.k_AxisNameVertical) != 0)
+        /*if (Input.GetAxisRaw(GameConstants.k_AxisNameVertical) != 0)
         {
             if (EventSystem.current.currentSelectedGameObject == null)
             {
                 EventSystem.current.SetSelectedGameObject(null);
                 shadowsToggle.Select();
             }
-        }
+        }*/
     }
 
-    public void ClosePauseMenu()
-    {
-        SetPauseMenuActivation(false);
-    }
-
-
-    public void TogglePauseMenu()
-    {
-        SetPauseMenuActivation(!menuRoot.activeSelf);
-    }
     void SetPauseMenuActivation(bool active)
     {
         menuRoot.SetActive(active);
@@ -95,6 +72,17 @@ public class InGameMenuManager : MonoBehaviour
 
     }
 
+    public void ToggleMenu()
+    {
+        if (controlImage.activeSelf)
+        {
+            controlImage.SetActive(false);
+            return;
+        }
+
+        SetPauseMenuActivation(!menuRoot.activeSelf);
+    }
+    
     void OnShadowsChanged(bool newValue)
     {
         QualitySettings.shadows = newValue ? ShadowQuality.All : ShadowQuality.Disable;
