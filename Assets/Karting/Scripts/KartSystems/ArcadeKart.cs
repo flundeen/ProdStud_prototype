@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.VFX;
+using UnityEngine.InputSystem;
 
 namespace KartGame.KartSystems
 {
@@ -73,6 +74,9 @@ namespace KartGame.KartSystems
 
         public Rigidbody Rigidbody { get; private set; }
         public InputData Input     { get; private set; }
+        private float accelVal = 0;
+        private float brakeVal = 0;
+        private float turnVal = 0;
         public float AirPercent    { get; private set; }
         public float GroundPercent { get; private set; }
 
@@ -330,9 +334,36 @@ namespace KartGame.KartSystems
             // gather nonzero input from our sources
             for (int i = 0; i < m_Inputs.Length; i++)
             {
-                Input = m_Inputs[i].GenerateInput();
+                Input = new InputData 
+                {
+                    Accelerate = accelVal > 0,
+                    Brake = brakeVal > 0,
+                    TurnInput = turnVal
+                };
                 WantsToDrift = Input.Brake && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
             }
+        }
+
+        // New input methods
+        public void OnAccelerate(InputValue val)
+        {
+            accelVal = val;
+        }
+        public void OnBrake(InputValue val)
+        {
+            brakeVal = val;
+        }
+        public void OnTurn(InputValue val)
+        {
+            turnVal = val;
+        }
+        public void OnPrimary()
+        {
+            Debug.Log("Firing Primary!");
+        }
+        public void OnGadget()
+        {
+            Debug.Log("Activating Gadget!");
         }
 
         void TickPowerups()
@@ -415,7 +446,7 @@ namespace KartGame.KartSystems
 
         void MoveVehicle(bool accelerate, bool brake, float turnInput)
         {
-            float accelInput = (accelerate ? 1.0f : 0.0f) - (brake ? 1.0f : 0.0f);
+            float accelInput = (accelerate ? accelVal : 0.0f) - (brake ? brakeVal : 0.0f);
 
             // manual acceleration curve coefficient scalar
             float accelerationCurveCoeff = 5;
