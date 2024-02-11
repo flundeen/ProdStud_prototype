@@ -161,6 +161,16 @@ namespace KartGame.KartSystems
         private float accelVal = 0;
         private float brakeVal = 0;
         private float turnVal = 0;
+        
+        //speed boost params
+        private float speedBoostElapsedCD = 21; //elapsed time since boost use
+        private float speedBoostCD = 10; //cooldown until car can be boosted again
+        private StatPowerup speedBoost = new StatPowerup();
+
+        //pizza gun params
+        public GameObject bullet;
+        private float fireRate = 0.25f;
+        private float fireRateElapsed = 0.26f;
         private bool isWeaponActive = false;
 
         const float k_NullInput = 0.01f;
@@ -272,6 +282,12 @@ namespace KartGame.KartSystems
             }
 
             camera = transform.GetChild(0).GetChild(0).GetComponent<Camera>();
+
+            //Defining Speed Boost params
+            speedBoost.modifiers.TopSpeed = 20f;
+            speedBoost.modifiers.Acceleration = 15f;
+            speedBoost.MaxTime = 5;
+            speedBoost.PowerUpID = "On-Time Speed Boost";
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -298,6 +314,15 @@ namespace KartGame.KartSystems
             UpdateSuspensionParams(RearRightWheel);
 
             GatherInputs();
+
+            //Activate Weapons & Gadgets
+            TickCooldowns();
+
+            if(isWeaponActive && fireRateElapsed > fireRate)
+            {
+                FirePrimary();
+                fireRateElapsed = 0;
+            }
 
             // apply our powerups to create our finalStats
             TickPowerups();
@@ -377,17 +402,49 @@ namespace KartGame.KartSystems
         }
         void OnGadget()
         {
+            if(!m_ActivePowerupList.Contains(speedBoost) && speedBoostElapsedCD > speedBoostCD)
+            {
+                Debug.Log("Adding " + speedBoost.PowerUpID);
+                speedBoost.ElapsedTime = 0;
+                AddPowerup(speedBoost);
+                speedBoostElapsedCD = 0;
+            }
+            
             Debug.Log("Activating Gadget!");
+            
         }
         void OnMenuToggle()
         {
             RaiseMenuToggle(this, new EventArgs());
         }
 
+        void FirePrimary()
+        {
+            //get position of kart
+            Vector3 position = transform.position;
+
+            //makes position adjustments based on player position
+            position.x += Mathf.Sin(transform.rotation.eulerAngles.y * Mathf.Deg2Rad) * 2;
+            position.z += Mathf.Cos(transform.rotation.eulerAngles.y * Mathf.Deg2Rad) * 2;
+            position.y += 1;
+
+            //creates bullet
+            GameObject firedBullet = Instantiate(bullet, position, transform.rotation);
+
+            //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
+            Bullet_Script bullet_ = new Bullet_Script();
+            firedBullet.GetComponent<Bullet_Script>().direction = transform.rotation.eulerAngles.y;
+            firedBullet.GetComponent<Bullet_Script>().shooter = gameObject;
+            firedBullet.GetComponent<Bullet_Script>().speed = 24;
+            firedBullet.GetComponent<Bullet_Script>().maxSpeed = 25;
+        }
+
         void TickPowerups()
         {
             // remove all elapsed powerups
-            m_ActivePowerupList.RemoveAll((p) => { return p.ElapsedTime > p.MaxTime; });
+            m_ActivePowerupList.RemoveAll((p) => {
+                if(p.ElapsedTime > p.MaxTime) {Debug.Log("Removing " + p.PowerUpID); }
+                 return p.ElapsedTime > p.MaxTime; });
 
             // zero out powerups before we add them all up
             var powerups = new Stats();
@@ -409,6 +466,12 @@ namespace KartGame.KartSystems
 
             // clamp values in finalstats
             m_FinalStats.Grip = Mathf.Clamp(m_FinalStats.Grip, 0, 1);
+        }
+
+        void TickCooldowns()
+        {
+            speedBoostElapsedCD += Time.fixedDeltaTime;
+            fireRateElapsed += Time.fixedDeltaTime;
         }
 
         void GroundAirbourne()
