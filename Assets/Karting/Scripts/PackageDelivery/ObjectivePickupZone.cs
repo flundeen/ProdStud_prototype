@@ -7,6 +7,8 @@ public class ObjectivePickupZone : MonoBehaviour
 
     [SerializeField]
     private float pickupTimer = 5f;
+    [SerializeField]
+    private Material packageMaterial; 
 
     private bool hasPackage;
     private List<GameObject> players;
@@ -27,6 +29,7 @@ public class ObjectivePickupZone : MonoBehaviour
     {
         if (hasPackage && players.Count == 1 && timers[0] > 0)
         {
+            packageMaterial.color = Color.green;
             timers[0] -= Time.deltaTime;
             Debug.Log("Picking up package");
             Debug.Log(players[0].name);
@@ -37,6 +40,19 @@ public class ObjectivePickupZone : MonoBehaviour
                 Debug.Log("Package has been picked up");
             }
         }
+        else if (players.Count > 1)
+        {
+            packageMaterial.color = Color.yellow;
+        }
+        else if (!hasPackage)
+        {
+            packageMaterial.color = Color.clear;
+        }
+        else
+        {
+            packageMaterial.color = Color.gray;
+        }
+
     }
 
     private void OnTriggerEnter(Collider collision)
