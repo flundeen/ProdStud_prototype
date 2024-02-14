@@ -332,13 +332,7 @@ namespace KartGame.KartSystems
             // apply our powerups to create our finalStats
             TickPowerups();
 
-            if(m_ActivePowerupList.Contains(speedBoost))
-            {
-                AddSparkToWheel(RearLeftWheel, -DriftSparkHorizontalOffset, -DriftSparkRotation);
-                AddSparkToWheel(RearRightWheel, DriftSparkHorizontalOffset, DriftSparkRotation);
-                AddTrailToWheel(RearLeftWheel);
-                AddTrailToWheel(RearRightWheel);
-            }
+            ActivateDriftVFX(m_ActivePowerupList.Contains(speedBoost));
 
             // apply our physics properties
             Rigidbody.centerOfMass = transform.InverseTransformPoint(CenterOfMass.position);
