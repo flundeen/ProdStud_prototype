@@ -53,6 +53,9 @@ namespace KartGame.KartSystems
             [Tooltip("Additional gravity for when the kart is in the air.")]
             public float AddedGravity;
 
+            [Tooltip("How much health the player has.")]
+            public float Health;
+
             // allow for stat adding for powerups.
             public static Stats operator +(Stats a, Stats b)
             {
@@ -68,6 +71,7 @@ namespace KartGame.KartSystems
                     ReverseSpeed        = a.ReverseSpeed + b.ReverseSpeed,
                     TopSpeed            = a.TopSpeed + b.TopSpeed,
                     Steer               = a.Steer + b.Steer,
+                    Health              = a.Health + b.Health,
                 };
             }
         }
@@ -89,6 +93,7 @@ namespace KartGame.KartSystems
             CoastingDrag        = 4f,
             Grip                = .95f,
             AddedGravity        = 1f,
+            Health              = 100f,
         };
 
         [Header("Vehicle Visual")] 
@@ -327,6 +332,14 @@ namespace KartGame.KartSystems
             // apply our powerups to create our finalStats
             TickPowerups();
 
+            if(m_ActivePowerupList.Contains(speedBoost))
+            {
+                AddSparkToWheel(RearLeftWheel, -DriftSparkHorizontalOffset, -DriftSparkRotation);
+                AddSparkToWheel(RearRightWheel, DriftSparkHorizontalOffset, DriftSparkRotation);
+                AddTrailToWheel(RearLeftWheel);
+                AddTrailToWheel(RearRightWheel);
+            }
+
             // apply our physics properties
             Rigidbody.centerOfMass = transform.InverseTransformPoint(CenterOfMass.position);
 
@@ -420,20 +433,24 @@ namespace KartGame.KartSystems
 
         void FirePrimary()
         {
+            
             //get position of kart
             Vector3 position = transform.position;
 
+            //get aim angle
+            float aimAngle = Mathf.Atan2(camera.transform.localPosition.x, camera.transform.localPosition.z) + transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
+
             //makes position adjustments based on player position
-            position.x += Mathf.Sin(transform.rotation.eulerAngles.y * Mathf.Deg2Rad) * 2;
-            position.z += Mathf.Cos(transform.rotation.eulerAngles.y * Mathf.Deg2Rad) * 2;
+            position.x += Mathf.Sin(aimAngle) * 2;
+            position.z += Mathf.Cos(aimAngle) * 2;
             position.y += 1;
 
             //creates bullet
-            GameObject firedBullet = Instantiate(bullet, position, transform.rotation);
+            GameObject firedBullet = Instantiate(bullet, position, Quaternion.Euler(0, aimAngle, 0));
 
             //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
             Bullet_Script bullet_ = new Bullet_Script();
-            firedBullet.GetComponent<Bullet_Script>().direction = transform.rotation.eulerAngles.y;
+            firedBullet.GetComponent<Bullet_Script>().direction = aimAngle;
             firedBullet.GetComponent<Bullet_Script>().shooter = gameObject;
             firedBullet.GetComponent<Bullet_Script>().speed = 24;
             firedBullet.GetComponent<Bullet_Script>().maxSpeed = 25;

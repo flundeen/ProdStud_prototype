@@ -34,7 +34,7 @@ public class Bullet_Script : MonoBehaviour
             Destroy(gameObject);
         }
         if(rbody.velocity.magnitude <= maxSpeed)
-        rbody.AddForce(Mathf.Sin(direction * Mathf.Deg2Rad) * speed, 0, Mathf.Cos(direction * Mathf.Deg2Rad) * speed, ForceMode.Impulse);
+        rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
     }
 
     void OnTriggerEnter(Collider other)
