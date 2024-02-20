@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using KartGame.KartSystems;
 using UnityEngine;
 
 public class Bullet_Script : MonoBehaviour
@@ -17,7 +18,7 @@ public class Bullet_Script : MonoBehaviour
     
     void Awake()
     {
-
+        damage = 10;
         UnityEngine.Quaternion target = UnityEngine.Quaternion.Euler(0, direction + 90, 0);
 
         gameObject.GetComponent<Transform>().rotation = target;
@@ -45,6 +46,10 @@ public class Bullet_Script : MonoBehaviour
         if(other.gameObject != shooter.GetComponentInChildren<CapsuleCollider>())
         {
             EndTrajectory();
+            if(other.gameObject.tag == "Player")
+            {
+                other.gameObject.GetComponent<ArcadeKart>().TakeDamage(damage);
+            }
         }   
     }
 

@@ -331,7 +331,8 @@ namespace KartGame.KartSystems
 
         void FixedUpdate()
         {
-            TakeDamage(0.5f);
+            //Damage tick to show how the car reacts to taking damage as well as how it takes damage
+            //TakeDamage(0.5f);
 
             UpdateSuspensionParams(FrontLeftWheel);
             UpdateSuspensionParams(FrontRightWheel);
@@ -457,7 +458,7 @@ namespace KartGame.KartSystems
             RaiseMenuToggle(this, new EventArgs());
         }
 
-        void TakeDamage(float damage){
+        public void TakeDamage(float damage){
             if(baseStats.Health - damage <= 0)
             {
                 Debug.Log("Player Died!");
