@@ -4,15 +4,43 @@ using UnityEngine;
 
 public class ObjectiveDropoff : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private float scoreTimer = 1.0f;
+    [SerializeField]
+    private Material dropoffMaterial;
+
+    private bool scored;
+
+    void Awake()
     {
-        
+        scored = false;
     }
 
     // Update is called once per frame
     void Update()
+    { 
+        if (scored)
+        {
+            dropoffMaterial.color = Color.green;
+            scoreTimer -= Time.deltaTime;
+            if (scoreTimer < 0)
+            {
+                scored = false;
+            }
+        }
+        else
+        {
+            dropoffMaterial.color = Color.gray;
+            scoreTimer = 1.0f;
+        }
+    }
+
+        private void OnTriggerEnter(Collider collision)
     {
-        
+        if (collision.tag == "Player" && collision.GetComponentInParent<KartPackage>().hasPackage)
+        {
+            collision.GetComponentInParent<KartPackage>().hasPackage = false;
+            scored = true;
+        }
     }
 }

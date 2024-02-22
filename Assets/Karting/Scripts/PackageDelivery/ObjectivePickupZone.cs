@@ -33,11 +33,10 @@ public class ObjectivePickupZone : MonoBehaviour
         {
             packageMaterial.color = Color.green;
             timers[0] -= Time.deltaTime;
-            Debug.Log("Picking up package");
-            Debug.Log(players[0].name);
             if (timers[0] <= 0)
             {
                 players[0].GetComponentInParent<KartPackage>().hasPackage = true;
+                sphere.GetComponent<Renderer>().enabled = false;
                 hasPackage = false;
                 Debug.Log("Package has been picked up");
             }
@@ -50,13 +49,6 @@ public class ObjectivePickupZone : MonoBehaviour
         {
             packageMaterial.color = Color.gray;
         }
-        
-        if (!hasPackage)
-        {
-            packageMaterial.color = Color.clear;
-            sphere.SetActive(true);
-        }
-
     }
 
     private void OnTriggerEnter(Collider collision)
@@ -74,7 +66,7 @@ public class ObjectivePickupZone : MonoBehaviour
         {
             for (int i = 0; i < players.Count; i++)
             {
-                if (players[i] == collision)
+                if (players[i].GetComponent<Collider>() == collision)
                 {
                     players.RemoveAt(i);
                     timers.RemoveAt(i);
@@ -88,7 +80,7 @@ public class ObjectivePickupZone : MonoBehaviour
         if (!hasPackage)
         {
             hasPackage = true;
-            sphere.SetActive(true);
+            sphere.GetComponent<Renderer>().enabled = true;
         }
     }
 }

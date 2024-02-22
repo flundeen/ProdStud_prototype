@@ -76,6 +76,8 @@ namespace KartGame.KartSystems
             }
         }
 
+
+
         public Rigidbody Rigidbody { get; private set; }
         public InputData Input     { get; private set; }
         public float AirPercent    { get; private set; }
@@ -208,6 +210,13 @@ namespace KartGame.KartSystems
         Vector3 m_LastCollisionNormal;
         bool m_HasCollision;
         bool m_InAir = false;
+
+        //Package variables
+        [SerializeField]
+        private GameObject package;
+        [SerializeField]
+        private GameObject droppedPackage;
+        private float packageTimer = 20f;
 
         // Event messages
         public event EventHandler RaiseMenuToggle;
@@ -344,6 +353,10 @@ namespace KartGame.KartSystems
             }
             else
             {
+                if (elapsedDeath == 0)
+                {
+                    Instantiate(droppedPackage, transform.position, transform.rotation);
+                }
                 elapsedDeath += Time.fixedDeltaTime;
                 if(elapsedDeath >= deathCD)
                 {
@@ -394,6 +407,21 @@ namespace KartGame.KartSystems
             m_PreviousGroundPercent = GroundPercent;
 
             UpdateDriftVFXOrientation();
+
+            if (this.GetComponent<KartPackage>().hasPackage)
+            {
+                package.GetComponent<Renderer>().enabled = true;
+                packageTimer -= Time.fixedDeltaTime;
+                if (packageTimer <= 0)
+                {
+                    baseStats.Health = -10;
+                }
+            }
+            else
+            {
+                package.GetComponent<Renderer>().enabled = false;
+                packageTimer = 20f;
+            }
         }
 
         void GatherInputs()
@@ -476,6 +504,7 @@ namespace KartGame.KartSystems
             transform.position = respawnPoint;
             elapsedDeath = 0;
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            this.GetComponent<KartPackage>().hasPackage = false;
         }
 
         void FirePrimary()
