@@ -177,10 +177,17 @@ namespace KartGame.KartSystems
         private float fireRate = 0.25f;
         private float fireRateElapsed = 0.26f;
         private bool isWeaponActive = false;
+        private List<GameObject> bulletList = new List<GameObject>();
+        private int magazineLoc = 0;
 
         const float k_NullInput = 0.01f;
         const float k_NullSpeed = 0.01f;
         Vector3 m_VerticalReference = Vector3.up;
+
+        //respawn point
+        private Vector3 respawnPoint = new Vector3(0, 5, 0);
+        private float deathCD = 2f;
+        private float elapsedDeath = 0f;
 
         // Drift params
         public bool WantsToDrift { get; private set; } = false;
@@ -293,6 +300,8 @@ namespace KartGame.KartSystems
             speedBoost.modifiers.Acceleration = 15f;
             speedBoost.MaxTime = 5;
             speedBoost.PowerUpID = "On-Time Speed Boost";
+
+            GenerateBullets();
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -311,14 +320,38 @@ namespace KartGame.KartSystems
             m_DriftSparkInstances.Add((wheel, horizontalOffset, -rotation, spark));
         }
 
+        void GenerateBullets()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                bulletList.Add(Instantiate(bullet, new Vector3(i * 4, -10, 5), bullet.transform.rotation));
+                bulletList[i].GetComponent<Bullet_Script>().bullet_num = i;
+            }
+        }
+
         void FixedUpdate()
         {
+            //Damage tick to show how the car reacts to taking damage as well as how it takes damage
+            //TakeDamage(0.5f);
+
             UpdateSuspensionParams(FrontLeftWheel);
             UpdateSuspensionParams(FrontRightWheel);
             UpdateSuspensionParams(RearLeftWheel);
             UpdateSuspensionParams(RearRightWheel);
 
-            GatherInputs();
+            if(baseStats.Health > 0) {
+                GatherInputs();
+            }
+            else
+            {
+                elapsedDeath += Time.fixedDeltaTime;
+                if(elapsedDeath >= deathCD)
+                {
+                    Debug.Log("Respawning Player.");
+                    Respawn();
+                }
+            }
+            
 
             //Activate Weapons & Gadgets
             TickCooldowns();
@@ -425,6 +458,26 @@ namespace KartGame.KartSystems
             RaiseMenuToggle(this, new EventArgs());
         }
 
+        public void TakeDamage(float damage){
+            if(baseStats.Health - damage <= 0)
+            {
+                Debug.Log("Player Died!");
+                baseStats.Health = 0;
+            }
+            else
+            {
+                Debug.Log("Player has taken " + damage + " points of damage.");
+                baseStats.Health -= damage;
+            }
+        }
+
+        void Respawn(){
+            baseStats.Health = 100f;
+            transform.position = respawnPoint;
+            elapsedDeath = 0;
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+
         void FirePrimary()
         {
             
@@ -432,7 +485,7 @@ namespace KartGame.KartSystems
             Vector3 position = transform.position;
 
             //get aim angle
-            float aimAngle = Mathf.Atan2(camera.transform.localPosition.x, camera.transform.localPosition.z) + transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
+            float aimAngle = Mathf.Atan2(camera.transform.localPosition.x, camera.transform.localPosition.z) + (transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
 
             //makes position adjustments based on player position
             position.x += Mathf.Sin(aimAngle) * 2;
@@ -440,14 +493,23 @@ namespace KartGame.KartSystems
             position.y += 1;
 
             //creates bullet
-            GameObject firedBullet = Instantiate(bullet, position, Quaternion.Euler(0, aimAngle, 0));
+            //bulletList[magazineLoc] = Instantiate(bullet, position, Quaternion.Euler(0, aimAngle, 0));
+            if(bulletList.Count == 0)
+            {
+                GenerateBullets();
+            }
 
             //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
-            Bullet_Script bullet_ = new Bullet_Script();
-            firedBullet.GetComponent<Bullet_Script>().direction = aimAngle;
-            firedBullet.GetComponent<Bullet_Script>().shooter = gameObject;
-            firedBullet.GetComponent<Bullet_Script>().speed = 24;
-            firedBullet.GetComponent<Bullet_Script>().maxSpeed = 25;
+            bulletList[magazineLoc].transform.position = position;
+            bulletList[magazineLoc].GetComponent<Rigidbody>().velocity = Vector3.zero;
+            bulletList[magazineLoc].GetComponent<Bullet_Script>().direction = aimAngle;
+            bulletList[magazineLoc].GetComponent<Bullet_Script>().shooter = gameObject;
+            bulletList[magazineLoc].GetComponent<Bullet_Script>().speed = 24;
+            bulletList[magazineLoc].GetComponent<Bullet_Script>().maxSpeed = 25;
+            bulletList[magazineLoc].GetComponent<Bullet_Script>().ElapsedTime = 0;
+
+            magazineLoc++;
+            if(magazineLoc >= 20) {magazineLoc = 0;}
         }
 
         void TickPowerups()
