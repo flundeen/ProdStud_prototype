@@ -8,7 +8,9 @@ public class ObjectivePickupZone : MonoBehaviour
     [SerializeField]
     private float pickupTimer = 5f;
     [SerializeField]
-    private Material packageMaterial; 
+    private Material packageMaterial;
+    [SerializeField]
+    private GameObject sphere;
 
     private bool hasPackage;
     private List<GameObject> players;
@@ -44,13 +46,15 @@ public class ObjectivePickupZone : MonoBehaviour
         {
             packageMaterial.color = Color.yellow;
         }
-        else if (!hasPackage)
-        {
-            packageMaterial.color = Color.clear;
-        }
         else
         {
             packageMaterial.color = Color.gray;
+        }
+        
+        if (!hasPackage)
+        {
+            packageMaterial.color = Color.clear;
+            sphere.SetActive(true);
         }
 
     }
@@ -76,6 +80,15 @@ public class ObjectivePickupZone : MonoBehaviour
                     timers.RemoveAt(i);
                 }
             }
+        }
+    }
+
+    public void AddPackage()
+    {
+        if (!hasPackage)
+        {
+            hasPackage = true;
+            sphere.SetActive(true);
         }
     }
 }
