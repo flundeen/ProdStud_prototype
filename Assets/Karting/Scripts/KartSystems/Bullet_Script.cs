@@ -15,6 +15,7 @@ public class Bullet_Script : MonoBehaviour
     public int bullet_num;
     private float lifeTime = 10;
     public float ElapsedTime = 0;
+    public bool isAlive = false;
     
     void Awake()
     {
@@ -43,17 +44,33 @@ public class Bullet_Script : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (!isAlive) return;
+
         if(other.gameObject != shooter.GetComponentInChildren<CapsuleCollider>())
         {
             EndTrajectory();
             if(other.gameObject.tag == "Player")
             {
+                Debug.Log(other.gameObject.name);
                 other.gameObject.GetComponent<ArcadeKart>().TakeDamage(damage);
             }
         }   
     }
 
+    public void Shoot(GameObject source, UnityEngine.Vector3 pos, float aimAngle)
+    {
+        transform.position = pos;
+        rbody.velocity = UnityEngine.Vector3.zero;
+        direction = aimAngle;
+        shooter = source;
+        speed = 24;
+        maxSpeed = 25;
+        ElapsedTime = 0;
+        isAlive = true;
+    }
+
     void EndTrajectory(){
+        isAlive = false;
         speed = 0;
         direction = 0;
         gameObject.GetComponent<Rigidbody>().velocity = UnityEngine.Vector3.zero;
