@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ScoreEvent
+{
+    Pickup = 1,
+    Kill = 3,
+    CarrierKill = 5,
+    Delivery = 7
+}
 public class GameManager : MonoBehaviour
 {
     // Singleton Properties
@@ -56,7 +63,13 @@ public class GameManager : MonoBehaviour
     // Update target player's score based on event type
     public void AwardPoints(int id, ScoreEvent e)
     {
+        if (id < 0 || id > scores.Length)
+        {
+            Debug.Log("ERROR: invalid id for awarding points");
+        }
+
         // Enum value determines points awarded (see Player.cs)
         scores[id] += (int)e;
+        Debug.Log("Player " + id + " earned " + (int)e + " points for " + e.ToString());
     }
 }

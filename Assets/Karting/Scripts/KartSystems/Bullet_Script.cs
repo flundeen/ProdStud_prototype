@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using KartGame.KartSystems;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Bullet_Script : MonoBehaviour
@@ -12,10 +13,10 @@ public class Bullet_Script : MonoBehaviour
     public float direction;
     public int damage;
     public GameObject shooter;
-    public int bullet_num;
     private float lifeTime = 10;
     public float ElapsedTime = 0;
     public bool isAlive = false;
+    public AttackInfo attackInfo;
     
     void Awake()
     {
@@ -28,45 +29,62 @@ public class Bullet_Script : MonoBehaviour
 
     void FixedUpdate()
     {
-        
-        if(speed > 0)
+        if(isAlive)
         {
             ElapsedTime += Time.fixedDeltaTime;
+
+            if (rbody.velocity.magnitude <= maxSpeed)
+                rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
+
+            if (ElapsedTime >= lifeTime)
+            {
+                EndTrajectory();
+                ElapsedTime = 0;
+            }
         }
-        if(ElapsedTime > lifeTime)
-        {
-            EndTrajectory();
-            ElapsedTime = 0;
-        }
-        if(rbody.velocity.magnitude <= maxSpeed)
-        rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (!isAlive) return;
+        EndTrajectory();
 
-        if(other.gameObject != shooter.GetComponentInChildren<CapsuleCollider>())
+        // Car hitbox are boxcolliders only
+        if (other is BoxCollider)
         {
-            EndTrajectory();
-            if(other.gameObject.tag == "Player")
+            if (other.transform.parent != null)
             {
-                Debug.Log(other.gameObject.name);
-                other.gameObject.GetComponent<ArcadeKart>().TakeDamage(damage);
+                // Attempt to call Car's TakeDamage by getting hitbox's parent's ArcadeKart component
+                // Deal damage if not attacker's own hitbox
+                if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target) && target != attackInfo.attacker)
+                    target.TakeDamage(attackInfo);
+
+                // Design should ensure that bullets do not spawn in attacker's own colliders
             }
-        }   
+            
+        }
+
+        // PREVIOUS CODE
+        //if(other.gameObject != shooter.GetComponentInChildren<CapsuleCollider>())
+        //{
+        //    EndTrajectory();
+        //    if(other.gameObject.tag == "Player")
+        //    {
+        //        other.gameObject.GetComponent<ArcadeKart>().TakeDamage(damage);
+        //    }
+        //}   
     }
 
-    public void Shoot(GameObject source, UnityEngine.Vector3 pos, float aimAngle)
+    public void Shoot(AttackInfo info, UnityEngine.Vector3 pos, float aimAngle)
     {
+        isAlive = true;
         transform.position = pos;
         rbody.velocity = UnityEngine.Vector3.zero;
         direction = aimAngle;
-        shooter = source;
+        attackInfo = info;
         speed = 24;
         maxSpeed = 25;
         ElapsedTime = 0;
-        isAlive = true;
     }
 
     void EndTrajectory(){

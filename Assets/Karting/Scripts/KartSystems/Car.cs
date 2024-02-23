@@ -20,6 +20,13 @@ namespace KartGame.KartSystems
         [System.Serializable]
         public struct Stats
         {
+            [Header("AWB Vehicle Stats (NOT IN USE YET)")]
+            public int awb_health;
+            public float awb_weight;
+            public float awb_acceleration;
+            public float awb_topSpeed;
+            public float awb_handling;
+
             [Header("Movement Settings")]
             [Min(0.001f), Tooltip("Top speed attainable when moving forward.")]
             public float TopSpeed;
@@ -162,32 +169,19 @@ namespace KartGame.KartSystems
         [Tooltip("Which layers the wheels will detect.")]
         public LayerMask GroundLayers = Physics.DefaultRaycastLayers;
 
-        Camera camera;
-
-        // the input sources that can control the kart
-        private float accelVal = 0;
-        private float brakeVal = 0;
-        private float turnVal = 0;
+        KartPackage kartPkg;
         
         //speed boost params
         private float speedBoostElapsedCD = 21; //elapsed time since boost use
         private float speedBoostCD = 10; //cooldown until car can be boosted again
         private StatPowerup speedBoost = new StatPowerup();
 
-        //pizza gun params
-        public GameObject bullet;
-        private float fireRate = 0.25f;
-        private float fireRateElapsed = 0.26f;
-        private bool isWeaponActive = false;
-        private List<GameObject> bulletList = new List<GameObject>();
-        private int magazineLoc = 0;
-
         const float k_NullInput = 0.01f;
         const float k_NullSpeed = 0.01f;
         Vector3 m_VerticalReference = Vector3.up;
 
         //respawn point
-        private Vector3 respawnPoint = new Vector3(0, 5, 0);
+        private Vector3 respawnPoint;
         private float deathCD = 2f;
         private float elapsedDeath = 0f;
 
@@ -302,15 +296,14 @@ namespace KartGame.KartSystems
                 }
             }
 
-            camera = transform.GetChild(0).GetChild(0).GetComponent<Camera>();
+            kartPkg = GetComponent<KartPackage>();
+            respawnPoint = transform.position + new Vector3(0, 5, 0);
 
             //Defining Speed Boost params
             speedBoost.modifiers.TopSpeed = 20f;
             speedBoost.modifiers.Acceleration = 15f;
             speedBoost.MaxTime = 5;
             speedBoost.PowerUpID = "On-Time Speed Boost";
-
-            GenerateBullets();
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -329,14 +322,6 @@ namespace KartGame.KartSystems
             m_DriftSparkInstances.Add((wheel, horizontalOffset, -rotation, spark));
         }
 
-        void GenerateBullets()
-        {
-            for (int i = 0; i < 20; i++)
-            {
-                bulletList.Add(Instantiate(bullet, new Vector3(i * 4, -10, 5), bullet.transform.rotation));
-                bulletList[i].GetComponent<Bullet_Script>().bullet_num = i;
-            }
-        }
 
         void FixedUpdate()
         {
@@ -348,16 +333,16 @@ namespace KartGame.KartSystems
             UpdateSuspensionParams(RearLeftWheel);
             UpdateSuspensionParams(RearRightWheel);
 
-            if(baseStats.Health > 0) {
-                GatherInputs();
-            }
-            else
+            if (baseStats.Health <= 0)
             {
                 if (elapsedDeath == 0)
                 {
-                    Instantiate(droppedPackage, transform.position, transform.rotation);
+                    if (kartPkg.hasPackage) 
+                        Instantiate(droppedPackage, transform.position, transform.rotation);
                 }
+
                 elapsedDeath += Time.fixedDeltaTime;
+
                 if(elapsedDeath >= deathCD)
                 {
                     Debug.Log("Respawning Player.");
@@ -368,12 +353,6 @@ namespace KartGame.KartSystems
 
             //Activate Weapons & Gadgets
             TickCooldowns();
-
-            if(isWeaponActive && fireRateElapsed > fireRate)
-            {
-                FirePrimary();
-                fireRateElapsed = 0;
-            }
 
             // apply our powerups to create our finalStats
             TickPowerups();
@@ -400,7 +379,7 @@ namespace KartGame.KartSystems
             // apply vehicle physics
             if (m_CanMove)
             {
-                MoveVehicle(Input.Accelerate, Input.Brake, Input.TurnInput);
+                MoveVehicle(Input.Acceleration, Input.Braking, Input.Turning);
             }
             GroundAirbourne();
 
@@ -424,50 +403,13 @@ namespace KartGame.KartSystems
             }
         }
 
-        void GatherInputs()
+        public void SendInputs(InputData inputs)
         {
-            // reset input
-            Input = new InputData();
-            WantsToDrift = false;
-
-            // gather nonzero input from our sources
-            Input = new InputData 
-            {
-                Accelerate = accelVal > 0,
-                Brake = brakeVal > 0,
-                TurnInput = turnVal
-            };
-            WantsToDrift = Input.Brake && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
+            Input = inputs;
+            WantsToDrift = Input.Braking > 0 && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
         }
 
         // New input methods
-        void OnAccelerate(InputValue val)
-        {
-            accelVal = val.Get<float>();
-        }
-        void OnBrake(InputValue val)
-        {
-            brakeVal = val.Get<float>();
-        }
-        void OnTurn(InputValue val)
-        {
-            turnVal = val.Get<float>();
-        }
-        void OnAim(InputValue val)
-        {
-            Vector2 offset = val.Get<Vector2>();
-
-            camera.transform.localPosition = new Vector3(offset.x, 0, offset.y) * 2;
-        }
-        void OnPrimary(InputValue val)
-        {
-            isWeaponActive = !isWeaponActive;
-
-            if (isWeaponActive)
-                Debug.Log("Firing Primary!");
-            else
-                Debug.Log("Stopping Primary!");
-        }
         void OnGadget()
         {
             if(!m_ActivePowerupList.Contains(speedBoost) && speedBoostElapsedCD > speedBoostCD)
@@ -486,16 +428,26 @@ namespace KartGame.KartSystems
             RaiseMenuToggle(this, new EventArgs());
         }
 
-        public void TakeDamage(float damage){
-            if(baseStats.Health - damage <= 0)
+        public void TakeDamage(AttackInfo info){
+            if(baseStats.Health - info.damage <= 0)
             {
                 Debug.Log("Player Died!");
                 baseStats.Health = 0;
+                elapsedDeath = 0;
+
+                // Award points if killed by player
+                if (info.attackerId != -1) // && attackerId != myId
+                {
+                    if (kartPkg.hasPackage)
+                        GameManager.Instance.AwardPoints(info.attackerId, ScoreEvent.CarrierKill);
+                    else
+                        GameManager.Instance.AwardPoints(info.attackerId, ScoreEvent.Kill);
+                }
             }
             else
             {
-                Debug.Log("Player has taken " + damage + " points of damage.");
-                baseStats.Health -= damage;
+                Debug.Log("Player has taken " + info.damage + " points of damage.");
+                baseStats.Health -= info.damage;
             }
         }
 
@@ -504,43 +456,9 @@ namespace KartGame.KartSystems
             transform.position = respawnPoint;
             elapsedDeath = 0;
             gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            this.GetComponent<KartPackage>().hasPackage = false;
+            kartPkg.hasPackage = false;
         }
 
-        void FirePrimary()
-        {
-            
-            //get position of kart
-            Vector3 position = transform.position;
-
-            //get aim angle
-            float aimAngle = Mathf.Atan2(camera.transform.localPosition.x, camera.transform.localPosition.z) + (transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
-
-            //makes position adjustments based on player position
-            position.x += Mathf.Sin(aimAngle) * 4;
-            position.z += Mathf.Cos(aimAngle) * 4;
-            position.y += 1;
-
-            //creates bullet
-            //bulletList[magazineLoc] = Instantiate(bullet, position, Quaternion.Euler(0, aimAngle, 0));
-            if(bulletList.Count == 0)
-            {
-                GenerateBullets();
-            }
-
-            //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
-            bulletList[magazineLoc].GetComponent<Bullet_Script>().Shoot(gameObject, position, aimAngle);
-            //bulletList[magazineLoc].transform.position = position;
-            //bulletList[magazineLoc].GetComponent<Rigidbody>().velocity = Vector3.zero;
-            //bulletList[magazineLoc].GetComponent<Bullet_Script>().direction = aimAngle;
-            //bulletList[magazineLoc].GetComponent<Bullet_Script>().shooter = gameObject;
-            //bulletList[magazineLoc].GetComponent<Bullet_Script>().speed = 24;
-            //bulletList[magazineLoc].GetComponent<Bullet_Script>().maxSpeed = 25;
-            //bulletList[magazineLoc].GetComponent<Bullet_Script>().ElapsedTime = 0;
-
-            magazineLoc++;
-            if(magazineLoc >= 20) {magazineLoc = 0;}
-        }
 
         void TickPowerups()
         {
@@ -574,7 +492,6 @@ namespace KartGame.KartSystems
         void TickCooldowns()
         {
             speedBoostElapsedCD += Time.fixedDeltaTime;
-            fireRateElapsed += Time.fixedDeltaTime;
         }
 
         void GroundAirbourne()
@@ -608,7 +525,7 @@ namespace KartGame.KartSystems
             else
             {
                 // use this value to play kart sound when it is waiting the race start countdown.
-                return Input.Accelerate ? 1.0f : 0.0f;
+                return Input.Acceleration > 0 ? 1.0f : 0.0f;
             }
         }
 
@@ -628,9 +545,9 @@ namespace KartGame.KartSystems
             }
         }
 
-        void MoveVehicle(bool accelerate, bool brake, float turnInput)
+        void MoveVehicle(float acceleration, float braking, float turning)
         {
-            float accelInput = (accelerate ? accelVal : 0.0f) - (brake ? brakeVal : 0.0f);
+            float accelInput = acceleration - braking;
 
             // manual acceleration curve coefficient scalar
             float accelerationCurveCoeff = 5;
@@ -648,7 +565,7 @@ namespace KartGame.KartSystems
             float multipliedAccelerationCurve = m_FinalStats.AccelerationCurve * accelerationCurveCoeff;
             float accelRamp = Mathf.Lerp(multipliedAccelerationCurve, 1, accelRampT * accelRampT);
 
-            bool isBraking = (localVelDirectionIsFwd && brake) || (!localVelDirectionIsFwd && accelerate);
+            bool isBraking = (localVelDirectionIsFwd && braking > 0) || (!localVelDirectionIsFwd && acceleration > 0);
 
             // if we are braking (moving reverse to where we are going)
             // use the braking accleration instead
@@ -657,7 +574,7 @@ namespace KartGame.KartSystems
             float finalAcceleration = finalAccelPower * accelRamp;
 
             // apply inputs to forward/backward
-            float turningPower = IsDrifting ? m_DriftTurningPower : turnInput * m_FinalStats.Steer;
+            float turningPower = IsDrifting ? m_DriftTurningPower : turning * m_FinalStats.Steer;
 
             Quaternion turnAngle = Quaternion.AngleAxis(turningPower, transform.up);
             Vector3 fwd = turnAngle * transform.forward;
@@ -743,13 +660,13 @@ namespace KartGame.KartSystems
 
                 if (IsDrifting)
                 {
-                    float turnInputAbs = Mathf.Abs(turnInput);
+                    float turnInputAbs = Mathf.Abs(turning);
                     if (turnInputAbs < k_NullInput)
                         m_DriftTurningPower = Mathf.MoveTowards(m_DriftTurningPower, 0.0f, Mathf.Clamp01(DriftDampening * Time.fixedDeltaTime));
 
                     // Update the turning power based on input
                     float driftMaxSteerValue = m_FinalStats.Steer + DriftAdditionalSteer;
-                    m_DriftTurningPower = Mathf.Clamp(m_DriftTurningPower + (turnInput * Mathf.Clamp01(DriftControl * Time.fixedDeltaTime)), -driftMaxSteerValue, driftMaxSteerValue);
+                    m_DriftTurningPower = Mathf.Clamp(m_DriftTurningPower + (turning * Mathf.Clamp01(DriftControl * Time.fixedDeltaTime)), -driftMaxSteerValue, driftMaxSteerValue);
 
                     bool facingVelocity = Vector3.Dot(Rigidbody.velocity.normalized, transform.forward * Mathf.Sign(accelInput)) > Mathf.Cos(MinAngleToFinishDrift * Mathf.Deg2Rad);
 
