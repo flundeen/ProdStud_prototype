@@ -9,6 +9,8 @@ public enum ScoreEvent
     CarrierKill = 5,
     Delivery = 7
 }
+
+// Manages game flow, initializing and ending gameplay, and tracking scores
 public class GameManager : MonoBehaviour
 {
     // Singleton Properties
@@ -16,9 +18,10 @@ public class GameManager : MonoBehaviour
 
     // Fields
     public float gameTime = 0;
+    public Player[] players = new Player[4];
     public int[] scores = new int[4];
 
-    private void Awake()
+    void Awake()
     {
         // Ensures that only one instance exists
         if (Instance != null && Instance != this)
@@ -30,7 +33,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // Gather players and set ids
+        // I know this is slow, I'll figure out a better way later
+        players = FindObjectsOfType<Player>();
+        for (int i = 0; i < players.Length; i++)
+            players[i].id = i;
     }
 
     // Update is called once per frame

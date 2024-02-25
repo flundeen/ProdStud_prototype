@@ -4,10 +4,7 @@ using UnityEngine.Events;
 
 public class ArcadeKartPowerup : MonoBehaviour {
 
-    public ArcadeKart.StatPowerup boostStats = new ArcadeKart.StatPowerup
-    {
-        MaxTime = 5
-    };
+    public ArcadeKart.StatPowerup boostStats = new ArcadeKart.StatPowerup();
 
     public bool isCoolingDown { get; private set; }
     public float lastActivatedTimestamp { get; private set; }

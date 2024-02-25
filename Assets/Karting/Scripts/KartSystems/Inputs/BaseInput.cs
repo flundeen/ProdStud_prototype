@@ -7,7 +7,6 @@ namespace KartGame.KartSystems
         public float Acceleration;
         public float Braking;
         public float Turning;
-        public float AimAngle;
     }
 
     public interface IInput

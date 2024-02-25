@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace KartGame.KartSystems
 {
+
     public class ArcadeKart : MonoBehaviour
     {
         [System.Serializable]
@@ -15,97 +16,130 @@ namespace KartGame.KartSystems
             public string PowerUpID;
             public float ElapsedTime;
             public float MaxTime;
+            public Action callback;
+
+            public StatPowerup()
+            {
+
+            }
+
+            public StatPowerup(ArcadeKart.Stats modifiers, string id, float maxTime, Action callback)
+            {
+                this.modifiers = modifiers;
+                this.PowerUpID = id;
+                this.MaxTime = maxTime;
+                this.callback = callback;
+            }
         }
 
         [System.Serializable]
         public struct Stats
         {
-            [Header("AWB Vehicle Stats (NOT IN USE YET)")]
-            public int awb_health;
-            public float awb_weight;
-            public float awb_acceleration;
-            public float awb_topSpeed;
-            public float awb_handling;
+            [Header("Vehicle Stats")]
+            [Tooltip("How much health the player has.")]
+            public float MaxHealth;
+            [NonSerialized]
+            public float Health;
 
-            [Header("Movement Settings")]
+            [Tooltip("How quickly the vehicle reaches top speed.")]
+            public float Acceleration;
+
             [Min(0.001f), Tooltip("Top speed attainable when moving forward.")]
             public float TopSpeed;
 
-            [Tooltip("How quickly the kart reaches top speed.")]
-            public float Acceleration;
-
-            [Min(0.001f), Tooltip("Top speed attainable when moving backward.")]
-            public float ReverseSpeed;
-
-            [Tooltip("How quickly the kart reaches top speed, when moving backward.")]
-            public float ReverseAcceleration;
-
-            [Tooltip("How quickly the kart starts accelerating from 0. A higher number means it accelerates faster sooner.")]
-            [Range(0.2f, 1)]
-            public float AccelerationCurve;
-
-            [Tooltip("How quickly the kart slows down when the brake is applied.")]
-            public float Braking;
-
-            [Tooltip("How quickly the kart will reach a full stop when no inputs are made.")]
-            public float CoastingDrag;
-
-            [Range(0.0f, 1.0f)]
-            [Tooltip("The amount of side-to-side friction.")]
-            public float Grip;
-
-            [Tooltip("How tightly the kart can turn left or right.")]
+            [Tooltip("How tightly the vehicle can turn left or right.")]
             public float Steer;
 
-            [Tooltip("Additional gravity for when the kart is in the air.")]
-            public float AddedGravity;
+            [Tooltip("How powerful the vehicle is in collisions.")]
+            public float Weight;
 
-            [Tooltip("How much health the player has.")]
-            public float Health;
+            public SubStats subStats;
+
+            [System.Serializable]
+            public struct SubStats
+            {
+                [Min(0.001f), Tooltip("Top speed attainable when moving backward.")]
+                public float ReverseSpeed;
+
+                [Tooltip("How quickly the kart reaches top speed, when moving backward.")]
+                public float ReverseAcceleration;
+
+                [Tooltip("How quickly the kart starts accelerating from 0. A higher number means it accelerates faster sooner.")]
+                [Range(0.2f, 1)]
+                public float AccelerationCurve;
+
+                [Tooltip("How quickly the kart slows down when the brake is applied.")]
+                public float Braking;
+
+                [Tooltip("How quickly the kart will reach a full stop when no inputs are made.")]
+                public float CoastingDrag;
+
+                [Range(0.0f, 1.0f)]
+                [Tooltip("The amount of side-to-side friction.")]
+                public float Grip;
+
+                [Tooltip("Additional gravity for when the kart is in the air.")]
+                public float AddedGravity;
+
+                public static SubStats operator +(SubStats a, SubStats b)
+                {
+                    return new SubStats
+                    {
+                        ReverseSpeed = a.ReverseSpeed + b.ReverseSpeed,
+                        ReverseAcceleration = a.ReverseAcceleration + b.ReverseAcceleration,
+                        AccelerationCurve = a.AccelerationCurve + b.AccelerationCurve,
+                        Braking = a.Braking + b.Braking,
+                        CoastingDrag = a.CoastingDrag + b.CoastingDrag,
+                        Grip = a.Grip + b.Grip,
+                        AddedGravity = a.AddedGravity + b.AddedGravity
+                    };
+                }
+            }
 
             // allow for stat adding for powerups.
             public static Stats operator +(Stats a, Stats b)
             {
                 return new Stats
                 {
-                    Acceleration        = a.Acceleration + b.Acceleration,
-                    AccelerationCurve   = a.AccelerationCurve + b.AccelerationCurve,
-                    Braking             = a.Braking + b.Braking,
-                    CoastingDrag        = a.CoastingDrag + b.CoastingDrag,
-                    AddedGravity        = a.AddedGravity + b.AddedGravity,
-                    Grip                = a.Grip + b.Grip,
-                    ReverseAcceleration = a.ReverseAcceleration + b.ReverseAcceleration,
-                    ReverseSpeed        = a.ReverseSpeed + b.ReverseSpeed,
-                    TopSpeed            = a.TopSpeed + b.TopSpeed,
-                    Steer               = a.Steer + b.Steer,
-                    Health              = a.Health + b.Health,
+                    MaxHealth = a.MaxHealth + b.MaxHealth,
+                    Health = a.Health + b.Health,
+                    Acceleration = a.Acceleration + b.Acceleration,
+                    TopSpeed = a.TopSpeed + b.TopSpeed,
+                    Steer = a.Steer + b.Steer,
+                    Weight = a.Weight + b.Weight,
+                    subStats = a.subStats + b.subStats
                 };
             }
         }
 
 
-
+        public GameObject kartVisual;
         public Rigidbody Rigidbody { get; private set; }
-        public InputData Input     { get; private set; }
-        public float AirPercent    { get; private set; }
+        public InputData Input { get; private set; }
+        public float AirPercent { get; private set; }
         public float GroundPercent { get; private set; }
 
         public ArcadeKart.Stats baseStats = new ArcadeKart.Stats
         {
-            TopSpeed            = 10f,
-            Acceleration        = 5f,
-            AccelerationCurve   = 4f,
-            Braking             = 10f,
-            ReverseAcceleration = 5f,
-            ReverseSpeed        = 5f,
-            Steer               = 5f,
-            CoastingDrag        = 4f,
-            Grip                = .95f,
-            AddedGravity        = 1f,
-            Health              = 100f,
+            MaxHealth = 100f,
+            Health = 100,
+            TopSpeed = 10f,
+            Acceleration = 5f,
+            Steer = 5f,
+            Weight = 5f,
+            subStats = new Stats.SubStats
+            {
+                AccelerationCurve = 4f,
+                Braking = 10f,
+                ReverseAcceleration = 5f,
+                ReverseSpeed = 5f,
+                CoastingDrag = 4f,
+                Grip = .95f,
+                AddedGravity = 1f,
+            }
         };
 
-        [Header("Vehicle Visual")] 
+        [Header("Vehicle Visual")]
         public List<GameObject> m_VisualWheels;
 
         [Header("Vehicle Physics")]
@@ -170,20 +204,10 @@ namespace KartGame.KartSystems
         public LayerMask GroundLayers = Physics.DefaultRaycastLayers;
 
         KartPackage kartPkg;
-        
-        //speed boost params
-        private float speedBoostElapsedCD = 21; //elapsed time since boost use
-        private float speedBoostCD = 10; //cooldown until car can be boosted again
-        private StatPowerup speedBoost = new StatPowerup();
 
         const float k_NullInput = 0.01f;
         const float k_NullSpeed = 0.01f;
         Vector3 m_VerticalReference = Vector3.up;
-
-        //respawn point
-        private Vector3 respawnPoint;
-        private float deathCD = 2f;
-        private float elapsedDeath = 0f;
 
         // Drift params
         public bool WantsToDrift { get; private set; } = false;
@@ -205,19 +229,22 @@ namespace KartGame.KartSystems
         bool m_HasCollision;
         bool m_InAir = false;
 
+        private int playerId = -1;
+
         //Package variables
         [SerializeField]
         private GameObject package;
         [SerializeField]
         private GameObject droppedPackage;
         private float packageTimer = 20f;
+        public bool HasPackage { get { return kartPkg.hasPackage; } }
 
-        // Event messages
-        public event EventHandler RaiseMenuToggle;
+        // Event fields
+        public Action<int> deathCallback;
 
         public void AddPowerup(StatPowerup statPowerup) => m_ActivePowerupList.Add(statPowerup);
         public void SetCanMove(bool move) => m_CanMove = move;
-        public float GetMaxSpeed() => Mathf.Max(m_FinalStats.TopSpeed, m_FinalStats.ReverseSpeed);
+        public float GetMaxSpeed() => Mathf.Max(m_FinalStats.TopSpeed, m_FinalStats.subStats.ReverseSpeed);
 
         private void ActivateDriftVFX(bool active)
         {
@@ -267,6 +294,7 @@ namespace KartGame.KartSystems
 
         void Awake()
         {
+            baseStats.Health = baseStats.MaxHealth;
             Rigidbody = GetComponent<Rigidbody>();
 
             UpdateSuspensionParams(FrontLeftWheel);
@@ -274,7 +302,7 @@ namespace KartGame.KartSystems
             UpdateSuspensionParams(RearLeftWheel);
             UpdateSuspensionParams(RearRightWheel);
 
-            m_CurrentGrip = baseStats.Grip;
+            m_CurrentGrip = baseStats.subStats.Grip;
 
             if (DriftSparkVFX != null)
             {
@@ -296,14 +324,8 @@ namespace KartGame.KartSystems
                 }
             }
 
+            transform.parent?.GetComponent<Player>();
             kartPkg = GetComponent<KartPackage>();
-            respawnPoint = transform.position + new Vector3(0, 5, 0);
-
-            //Defining Speed Boost params
-            speedBoost.modifiers.TopSpeed = 20f;
-            speedBoost.modifiers.Acceleration = 15f;
-            speedBoost.MaxTime = 5;
-            speedBoost.PowerUpID = "On-Time Speed Boost";
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -322,42 +344,26 @@ namespace KartGame.KartSystems
             m_DriftSparkInstances.Add((wheel, horizontalOffset, -rotation, spark));
         }
 
+        public void AssignOwner(Player p)
+        {
+            playerId = p.id;
+        }
 
         void FixedUpdate()
         {
-            //Damage tick to show how the car reacts to taking damage as well as how it takes damage
-            //TakeDamage(0.5f);
+            // Skip processing if not alive
+            if (baseStats.Health <= 0) return;
 
             UpdateSuspensionParams(FrontLeftWheel);
             UpdateSuspensionParams(FrontRightWheel);
             UpdateSuspensionParams(RearLeftWheel);
             UpdateSuspensionParams(RearRightWheel);
 
-            if (baseStats.Health <= 0)
-            {
-                if (elapsedDeath == 0)
-                {
-                    if (kartPkg.hasPackage) 
-                        Instantiate(droppedPackage, transform.position, transform.rotation);
-                }
-
-                elapsedDeath += Time.fixedDeltaTime;
-
-                if(elapsedDeath >= deathCD)
-                {
-                    Debug.Log("Respawning Player.");
-                    Respawn();
-                }
-            }
-            
-
-            //Activate Weapons & Gadgets
-            TickCooldowns();
-
             // apply our powerups to create our finalStats
             TickPowerups();
 
-            ActivateDriftVFX(m_ActivePowerupList.Contains(speedBoost));
+            // apply drift if speed is boosted
+            ActivateDriftVFX(m_ActivePowerupList.Find(s => s.PowerUpID == "On-Time Speed Boost") != null);
 
             // apply our physics properties
             Rigidbody.centerOfMass = transform.InverseTransformPoint(CenterOfMass.position);
@@ -387,13 +393,14 @@ namespace KartGame.KartSystems
 
             UpdateDriftVFXOrientation();
 
-            if (this.GetComponent<KartPackage>().hasPackage)
+            if (kartPkg.hasPackage)
             {
                 package.GetComponent<Renderer>().enabled = true;
                 packageTimer -= Time.fixedDeltaTime;
                 if (packageTimer <= 0)
                 {
-                    baseStats.Health = -10;
+                    Debug.Log("Package exploded!");
+                    Die(-1); // -1 for non-player attack
                 }
             }
             else
@@ -409,63 +416,70 @@ namespace KartGame.KartSystems
             WantsToDrift = Input.Braking > 0 && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
         }
 
-        // New input methods
-        void OnGadget()
+        public bool TakeDamage(AttackInfo info)
         {
-            if(!m_ActivePowerupList.Contains(speedBoost) && speedBoostElapsedCD > speedBoostCD)
-            {
-                Debug.Log("Adding " + speedBoost.PowerUpID);
-                speedBoost.ElapsedTime = 0;
-                AddPowerup(speedBoost);
-                speedBoostElapsedCD = 0;
-            }
-            
-            Debug.Log("Activating Gadget!");
-            
-        }
-        void OnMenuToggle()
-        {
-            RaiseMenuToggle(this, new EventArgs());
-        }
+            // If own attack or already dead, does not count
+            if (baseStats.Health <= 0 || info.attackerId == playerId)
+                return false;
 
-        public void TakeDamage(AttackInfo info){
             if(baseStats.Health - info.damage <= 0)
-            {
-                Debug.Log("Player Died!");
-                baseStats.Health = 0;
-                elapsedDeath = 0;
-
-                // Award points if killed by player
-                if (info.attackerId != -1) // && attackerId != myId
-                {
-                    if (kartPkg.hasPackage)
-                        GameManager.Instance.AwardPoints(info.attackerId, ScoreEvent.CarrierKill);
-                    else
-                        GameManager.Instance.AwardPoints(info.attackerId, ScoreEvent.Kill);
-                }
-            }
+                Die(info.attackerId);
             else
             {
-                Debug.Log("Player has taken " + info.damage + " points of damage.");
+                Debug.Log("Player " + playerId + " has taken " + info.damage + " points of damage. " + baseStats.Health + " remaining.");
                 baseStats.Health -= info.damage;
             }
+
+            // Attack successful
+            return true;
         }
 
-        void Respawn(){
-            baseStats.Health = 100f;
-            transform.position = respawnPoint;
-            elapsedDeath = 0;
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        void Die(int attackerId)
+        {
+            Debug.Log("Player " + playerId + " died!");
+
+            baseStats.Health = 0;
+            Rigidbody.velocity = Vector3.zero;
+
+            // Send death notification if this car belongs to player
+            deathCallback?.Invoke(attackerId);
+
+            // Drop package if carrying one
+            if (kartPkg.hasPackage)
+            {
+                Instantiate(droppedPackage, transform.position, transform.rotation);
+                kartPkg.hasPackage = false;
+            }
+
+            // Turn off visibility
+            // FixedUpdate processing skipped when dead
+            kartVisual.SetActive(false);
+
+            // If non-player car, completely disable (assuming no respawn)
+            if (playerId == -1) gameObject.SetActive(false);
+        }
+
+        public void ResetCar()
+        {
+            baseStats.Health = baseStats.MaxHealth;
+            kartVisual.SetActive(true);
             kartPkg.hasPackage = false;
+            packageTimer = 20f;
         }
 
 
         void TickPowerups()
         {
             // remove all elapsed powerups
-            m_ActivePowerupList.RemoveAll((p) => {
-                if(p.ElapsedTime > p.MaxTime) {Debug.Log("Removing " + p.PowerUpID); }
-                 return p.ElapsedTime > p.MaxTime; });
+            m_ActivePowerupList.RemoveAll((p) => 
+            {
+                if(p.ElapsedTime > p.MaxTime)
+                {
+                    Debug.Log("Removing " + p.PowerUpID);
+                    p.callback();
+                }
+                return p.ElapsedTime > p.MaxTime; 
+            });
 
             // zero out powerups before we add them all up
             var powerups = new Stats();
@@ -486,12 +500,7 @@ namespace KartGame.KartSystems
             m_FinalStats = baseStats + powerups;
 
             // clamp values in finalstats
-            m_FinalStats.Grip = Mathf.Clamp(m_FinalStats.Grip, 0, 1);
-        }
-
-        void TickCooldowns()
-        {
-            speedBoostElapsedCD += Time.fixedDeltaTime;
+            m_FinalStats.subStats.Grip = Mathf.Clamp(m_FinalStats.subStats.Grip, 0, 1);
         }
 
         void GroundAirbourne()
@@ -499,15 +508,8 @@ namespace KartGame.KartSystems
             // while in the air, fall faster
             if (AirPercent >= 1)
             {
-                Rigidbody.velocity += Physics.gravity * Time.fixedDeltaTime * m_FinalStats.AddedGravity;
+                Rigidbody.velocity += Physics.gravity * Time.fixedDeltaTime * m_FinalStats.subStats.AddedGravity;
             }
-        }
-
-        public void Reset()
-        {
-            Vector3 euler = transform.rotation.eulerAngles;
-            euler.x = euler.z = 0f;
-            transform.rotation = Quaternion.Euler(euler);
         }
 
         public float LocalSpeed()
@@ -518,7 +520,7 @@ namespace KartGame.KartSystems
                 if (Mathf.Abs(dot) > 0.1f)
                 {
                     float speed = Rigidbody.velocity.magnitude;
-                    return dot < 0 ? -(speed / m_FinalStats.ReverseSpeed) : (speed / m_FinalStats.TopSpeed);
+                    return dot < 0 ? -(speed / m_FinalStats.subStats.ReverseSpeed) : (speed / m_FinalStats.TopSpeed);
                 }
                 return 0f;
             }
@@ -557,19 +559,19 @@ namespace KartGame.KartSystems
             bool localVelDirectionIsFwd = localVel.z >= 0;
 
             // use the max speed for the direction we are going--forward or reverse.
-            float maxSpeed = localVelDirectionIsFwd ? m_FinalStats.TopSpeed : m_FinalStats.ReverseSpeed;
-            float accelPower = accelDirectionIsFwd ? m_FinalStats.Acceleration : m_FinalStats.ReverseAcceleration;
+            float maxSpeed = localVelDirectionIsFwd ? m_FinalStats.TopSpeed : m_FinalStats.subStats.ReverseSpeed;
+            float accelPower = accelDirectionIsFwd ? m_FinalStats.Acceleration : m_FinalStats.subStats.ReverseAcceleration;
 
             float currentSpeed = Rigidbody.velocity.magnitude;
             float accelRampT = currentSpeed / maxSpeed;
-            float multipliedAccelerationCurve = m_FinalStats.AccelerationCurve * accelerationCurveCoeff;
+            float multipliedAccelerationCurve = m_FinalStats.subStats.AccelerationCurve * accelerationCurveCoeff;
             float accelRamp = Mathf.Lerp(multipliedAccelerationCurve, 1, accelRampT * accelRampT);
 
             bool isBraking = (localVelDirectionIsFwd && braking > 0) || (!localVelDirectionIsFwd && acceleration > 0);
 
             // if we are braking (moving reverse to where we are going)
             // use the braking accleration instead
-            float finalAccelPower = isBraking ? m_FinalStats.Braking : accelPower;
+            float finalAccelPower = isBraking ? m_FinalStats.subStats.Braking : accelPower;
 
             float finalAcceleration = finalAccelPower * accelRamp;
 
@@ -599,7 +601,7 @@ namespace KartGame.KartSystems
             // coasting is when we aren't touching accelerate
             if (Mathf.Abs(accelInput) < k_NullInput && GroundPercent > 0.0f)
             {
-                newVelocity = Vector3.MoveTowards(newVelocity, new Vector3(0, Rigidbody.velocity.y, 0), Time.fixedDeltaTime * m_FinalStats.CoastingDrag);
+                newVelocity = Vector3.MoveTowards(newVelocity, new Vector3(0, Rigidbody.velocity.y, 0), Time.fixedDeltaTime * m_FinalStats.subStats.CoastingDrag);
             }
 
             Rigidbody.velocity = newVelocity;
@@ -682,7 +684,7 @@ namespace KartGame.KartSystems
                     {
                         // No Input, and car aligned with speed direction => Stop the drift
                         IsDrifting = false;
-                        m_CurrentGrip = m_FinalStats.Grip;
+                        m_CurrentGrip = m_FinalStats.subStats.Grip;
                     }
 
                 }

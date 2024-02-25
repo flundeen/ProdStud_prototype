@@ -197,6 +197,7 @@ Transform:
   m_Children:
   - {fileID: 7798798854738640035}
   - {fileID: 7798798856362610874}
+  - {fileID: 7798798855868438164}
   m_Father: {fileID: 4810912518991602692}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -379,10 +380,15 @@ PrefabInstance:
       propertyPath: AirborneReorientationCoefficient
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4895846115232909977, guid: cba6236a3ca88a54081cc989c4f0c08a,
+        type: 3}
+      propertyPath: baseStats.subStats.AccelerationCurve
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4895846115232909979, guid: cba6236a3ca88a54081cc989c4f0c08a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 4895846115232909979, guid: cba6236a3ca88a54081cc989c4f0c08a,
         type: 3}
@@ -477,10 +483,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6643281549960510367}
-    - targetCorrespondingSourceObject: {fileID: 4895846115232909979, guid: cba6236a3ca88a54081cc989c4f0c08a,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7798798855868438164}
     - targetCorrespondingSourceObject: {fileID: 4895846115232909979, guid: cba6236a3ca88a54081cc989c4f0c08a,
         type: 3}
       insertIndex: -1
@@ -691,7 +693,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 4810912518991602692}
+    m_TransformParent: {fileID: 6643281549960510367}
     m_Modifications:
     - target: {fileID: 100006, guid: 305a556307b36464395aa157cffcd3db, type: 3}
       propertyPath: m_Name
@@ -727,7 +729,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 305a556307b36464395aa157cffcd3db, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: 305a556307b36464395aa157cffcd3db, type: 3}
       propertyPath: m_LocalPosition.x

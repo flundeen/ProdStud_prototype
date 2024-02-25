@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using KartGame.KartSystems;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Bullet_Script : MonoBehaviour
@@ -20,11 +19,9 @@ public class Bullet_Script : MonoBehaviour
     
     void Awake()
     {
-        damage = 10;
         UnityEngine.Quaternion target = UnityEngine.Quaternion.Euler(0, direction + 90, 0);
 
         gameObject.GetComponent<Transform>().rotation = target;
-
     }
 
     void FixedUpdate()
@@ -46,23 +43,27 @@ public class Bullet_Script : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        // Skip if inactive
         if (!isAlive) return;
-        EndTrajectory();
 
         // Car hitbox are boxcolliders only
         if (other is BoxCollider)
         {
             if (other.transform.parent != null)
             {
-                // Attempt to call Car's TakeDamage by getting hitbox's parent's ArcadeKart component
-                // Deal damage if not attacker's own hitbox
-                if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target) && target != attackInfo.attacker)
-                    target.TakeDamage(attackInfo);
-
-                // Design should ensure that bullets do not spawn in attacker's own colliders
+                // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
+                if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
+                {
+                    // If attack succeeds, stop bullet
+                    if (target.TakeDamage(attackInfo))
+                        EndTrajectory();
+                    else // If attack fails (self-attack), pass through collider
+                        return;
+                }
             }
-            
         }
+
+        EndTrajectory();
 
         // PREVIOUS CODE
         //if(other.gameObject != shooter.GetComponentInChildren<CapsuleCollider>())
@@ -78,16 +79,16 @@ public class Bullet_Script : MonoBehaviour
     public void Shoot(AttackInfo info, UnityEngine.Vector3 pos, float aimAngle)
     {
         isAlive = true;
+        ElapsedTime = 0;
         transform.position = pos;
         rbody.velocity = UnityEngine.Vector3.zero;
         direction = aimAngle;
         attackInfo = info;
-        speed = 24;
+        speed = 24; // Maybe these are also parameters?
         maxSpeed = 25;
-        ElapsedTime = 0;
     }
 
-    void EndTrajectory(){
+    public void EndTrajectory(){
         isAlive = false;
         speed = 0;
         direction = 0;

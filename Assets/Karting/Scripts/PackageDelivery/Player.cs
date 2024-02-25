@@ -1,4 +1,5 @@
 using KartGame.KartSystems;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,33 +17,56 @@ public class Player : MonoBehaviour
     private float accelVal = 0;
     private float brakeVal = 0;
     private float turnVal = 0;
-    private Vector2 aimVector = Vector2.zero;
+    private Vector2 cameraOffset = Vector2.zero;
+
+    // Fields
+    public int id;
+    public bool isAlive;
 
     // Start is called before the first frame update
     void Start()
     {
-        car = GetComponent<ArcadeKart>();
-        weapon = GetComponent<Weapon>();
-        weapon.SetSource(car);
+        isAlive = true;
+
+        // Car initialization
+        car.AssignOwner(this);
+        // Hook car death to player death event
+        car.deathCallback += (int attackerId) => EventManager.Instance.PlayerDeath(this, new ScoreEventArgs
+        {
+            scoreEvent = (car.HasPackage ? ScoreEvent.CarrierKill : ScoreEvent.Kill),
+            scorerId = attackerId,
+            deadPlayerId = id
+        });
+
+        // Weapon initialization
+        if (weapon != null) weapon.Initialize(id, car);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // Input handling
+        GatherInputs();
+        car.SendInputs(inputs);
     }
 
-    // Camera
-    // Handle input here
+    public void Respawn(Vector3 pos, Quaternion rot)
+    {
+        // Reset player data
+        isAlive = true;
+        car.transform.SetPositionAndRotation(pos, rot);
+        car.ResetCar();
+        weapon.ResetWeapons();
+    }
+
     void GatherInputs()
     {
         inputs = new InputData
         {
             Acceleration = accelVal,
             Braking = brakeVal,
-            Turning = turnVal,
-            AimAngle = Mathf.Atan2(aimVector.x, aimVector.y) + (car.transform.rotation.eulerAngles.y * Mathf.Deg2Rad)
-    };
+            Turning = turnVal
+        };
     }
 
     void OnAccelerate(InputValue val)
@@ -59,8 +83,12 @@ public class Player : MonoBehaviour
     }
     void OnAim(InputValue val)
     {
-        aimVector = val.Get<Vector2>();
+        cameraOffset = val.Get<Vector2>();
 
-        camera.transform.localPosition = new Vector3(aimVector.x, 0, aimVector.y) * 2;
+        camera.transform.localPosition = new Vector3(cameraOffset.x, 0, cameraOffset.y) * 2;
+    }
+    void OnMenuToggle()
+    {
+        EventManager.Instance.ToggleMenu();
     }
 }

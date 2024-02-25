@@ -2,6 +2,7 @@ using KartGame.KartSystems;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum AttackType
 {
@@ -13,13 +14,11 @@ public enum AttackType
 
 public struct AttackInfo
 {
-    public ArcadeKart attacker;
     public int attackerId; // -1 if not player
     public int damage;
 
-    public AttackInfo(ArcadeKart attacker, int attackerId, int damage)
+    public AttackInfo(int attackerId, int damage)
     {
-        this.attacker = attacker;
         this.attackerId = attackerId;
         this.damage = damage;
     }
@@ -28,10 +27,12 @@ public struct AttackInfo
 public class Weapon : MonoBehaviour
 {
     // Fields
-    protected InputData inputs;
+    protected int playerId;
     protected ArcadeKart car;
+    protected Vector2 aimVector = Vector2.zero;
 
     // Primary Fields
+    public int primaryDamage;
     public float primaryCooldown;
     protected Timer primaryClock;
     protected bool isPrimaryActive;
@@ -58,25 +59,36 @@ public class Weapon : MonoBehaviour
         
     }
 
-    public void SetSource(ArcadeKart car)
+    public void Initialize(int playerId, ArcadeKart car)
     {
+        this.playerId = playerId;
         this.car = car;
     }
 
-    public void SendInput(InputData input)
+    virtual public void OnPrimary(InputValue val)
     {
-        inputs = input;
+        isPrimaryActive = val.Get<float>() > 0;
     }
 
-    virtual public void OnPrimary()
+    // For AI use
+    public void OnPrimary(float val)
     {
-        isPrimaryActive = !isPrimaryActive;
-
-        return;
+        isPrimaryActive = val > 0;
     }
 
     virtual public void OnGadget()
     {
         return;
+    }
+
+    virtual public void OnAim(InputValue val)
+    {
+        aimVector = val.Get<Vector2>();
+    }
+
+    virtual public void ResetWeapons()
+    {
+        primaryClock.End();
+        gadgetClock.End();
     }
 }

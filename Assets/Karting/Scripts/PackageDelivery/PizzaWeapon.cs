@@ -1,27 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using KartGame.KartSystems;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class PizzaWeapon : Weapon
 {
     // Pizza Car Fields
     public GameObject bulletPrefab;
     private List<Bullet_Script> bulletPool;
-    // Speedboost here
+    private ArcadeKart.StatPowerup speedBoost;
+    public ArcadeKart.Stats speedBoostEffect = new ArcadeKart.Stats
+    {
+        Acceleration = 15f,
+        TopSpeed = 20f
+    };
+    private bool isBoostActive = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Create bullet pool for primary weapon
         bulletPool = new List<Bullet_Script>();
         GenerateBullets(20);
+
+        // Define gadget parameters
+        speedBoost = new ArcadeKart.StatPowerup(speedBoostEffect, "On-Time Speed Boost", 5, () => isBoostActive = false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Update weapon cooldowns
         primaryClock.Update(Time.deltaTime);
-        gadgetClock.Update(Time.deltaTime);
+        if (!isBoostActive)
+            gadgetClock.Update(Time.deltaTime); // only update while inactive
 
+        // Fire primary while input is held
         if (isPrimaryActive)
         {
             if (primaryClock.IsReady)
@@ -34,11 +50,9 @@ public class PizzaWeapon : Weapon
 
     // Pizza Car Primary: Pepperoni Popper
     // Fire 5 shots/sec at 40 DPS (8 dmg each) whle active
-    public override void OnPrimary()
+    public override void OnPrimary(InputValue val)
     {
-        base.OnPrimary();
-
-
+        base.OnPrimary(val);
     }
 
     // Pizza Car Gadget: Running Late
@@ -46,10 +60,30 @@ public class PizzaWeapon : Weapon
     // Cooldown: 15s (after boost expires)
     public override void OnGadget()
     {
-        base.OnGadget();
-
         if (gadgetClock.IsReady)
-            return; // Do gadget
+        {
+            isBoostActive = true;
+            car.AddPowerup(speedBoost);
+            gadgetClock.Start();
+        }
+    }
+
+    // Resets primary and gadget states for respawning
+    public override void ResetWeapons()
+    {
+        // Resets timers
+        base.ResetWeapons();
+
+        // Reset primary pool
+        foreach (Bullet_Script b in bulletPool)
+        {
+            // Reset all bullets to inactive state
+            if (b.isAlive)
+                b.EndTrajectory();
+        }
+
+        // Reset gadget data
+        isBoostActive = false;
     }
 
     void GenerateBullets(int count)
@@ -60,26 +94,29 @@ public class PizzaWeapon : Weapon
 
     void FirePrimary()
     {
-
         //get position of kart
         Vector3 position = car.transform.position;
 
-        //makes position adjustments based on player position
-        position.x += Mathf.Sin(inputs.AimAngle) * 4;
-        position.z += Mathf.Cos(inputs.AimAngle) * 4;
+        // get firing angle based on car direction and aim vector
+        float aimAngle = Mathf.Atan2(aimVector.x, aimVector.y) + (car.transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
+
+        // makes position adjustments based on player position
+        // Constant multiplier based on car size, higher = further from center
+        position.x += Mathf.Sin(aimAngle) * 2;
+        position.z += Mathf.Cos(aimAngle) * 2;
         position.y += 1;
 
         //creates bullet
         Bullet_Script bullet = bulletPool.Find(b => b.isAlive == false);
 
-        // If no inactive bullets, generate one
+        // If no inactive bullets, create one
         if (bullet == null)
         {
             GenerateBullets(1);
-            bullet = bulletPool[bulletPool.Count - 1];
+            bullet = bulletPool[^1]; // This is simplified from (bulletPool.Count - 1)??? if it works it works ig
         }
 
         //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
-        bullet.Shoot(new AttackInfo(car, -1, 10), position, inputs.AimAngle);
+        bullet.Shoot(new AttackInfo(playerId, primaryDamage), position, aimAngle);
     }
 }

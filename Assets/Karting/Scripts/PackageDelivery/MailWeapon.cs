@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MailWeapon : Weapon
 {
@@ -19,9 +20,9 @@ public class MailWeapon : Weapon
     // Mail Truck Primary: First-Class Catapult
     // Lob AOE attack, holding primary input increases travel distance until release
     // 50 dmg, 0.5s between shots, charge for up to 0.5s, 0.5s from release until impact
-    public override void OnPrimary()
+    public override void OnPrimary(InputValue val)
     {
-        base.OnPrimary();
+        base.OnPrimary(val);
     }
 
     // Mail Truck Gadget: Drone Swarm
