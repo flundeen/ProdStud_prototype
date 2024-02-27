@@ -15,11 +15,13 @@ public enum AttackType
 public struct AttackInfo
 {
     public int attackerId; // -1 if not player
+    public AttackType type;
     public int damage;
 
-    public AttackInfo(int attackerId, int damage)
+    public AttackInfo(int attackerId, AttackType type, int damage)
     {
         this.attackerId = attackerId;
+        this.type = type;
         this.damage = damage;
     }
 }

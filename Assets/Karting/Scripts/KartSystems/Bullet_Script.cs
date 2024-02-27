@@ -11,33 +11,55 @@ public class Bullet_Script : MonoBehaviour
     public int maxSpeed;
     public float direction;
     public int damage;
-    public GameObject shooter;
-    private float lifeTime = 10;
+    private float lifeTime;
     public float ElapsedTime = 0;
     public bool isAlive = false;
     public AttackInfo attackInfo;
+
+    // Lob Fields
+    public bool isExploding = false;
     
     void Awake()
     {
-        UnityEngine.Quaternion target = UnityEngine.Quaternion.Euler(0, direction + 90, 0);
+        //UnityEngine.Quaternion target = UnityEngine.Quaternion.Euler(0, direction + 90, 0);
 
-        gameObject.GetComponent<Transform>().rotation = target;
+        //gameObject.GetComponent<Transform>().rotation = target;
     }
 
     void FixedUpdate()
     {
-        if(isAlive)
+        if (isAlive)
         {
             ElapsedTime += Time.fixedDeltaTime;
 
-            if (rbody.velocity.magnitude <= maxSpeed)
-                rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
+            Move();
 
             if (ElapsedTime >= lifeTime)
             {
                 EndTrajectory();
                 ElapsedTime = 0;
             }
+        }
+    }
+
+    public void Move()
+    {
+        switch (attackInfo.type)
+        {
+            case AttackType.Shot:
+                if (rbody.velocity.magnitude <= speed)
+                    rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
+                return;
+
+            case AttackType.Lob:
+                //if (rbody.velocity.magnitude <= speed)
+                //    rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
+                //rbody.velocity = new UnityEngine.Vector3(Mathf.Sin(direction) * speed, rbody.velocity.y - Time.fixedDeltaTime * 2, Mathf.Cos(direction) * speed);
+                //rbody.AddForce(0, -4 * Time.fixedDeltaTime, 0, ForceMode.VelocityChange);
+                return;
+
+            case AttackType.Homing:
+                return;
         }
     }
 
@@ -84,8 +106,29 @@ public class Bullet_Script : MonoBehaviour
         rbody.velocity = UnityEngine.Vector3.zero;
         direction = aimAngle;
         attackInfo = info;
-        speed = 24; // Maybe these are also parameters?
-        maxSpeed = 25;
+
+        switch (info.type)
+        {
+            case AttackType.Shot:
+                speed = 24;
+                maxSpeed = 25;
+                lifeTime = 3;
+                return;
+
+            case AttackType.Lob:
+                speed = 12;
+                lifeTime = 100; // Lifetime is defined by arc
+                rbody.velocity = UnityEngine.Vector3.up * 2;
+                //rbody.AddForce(Mathf.Sin(direction) * speed, 100, Mathf.Cos(direction) * speed, ForceMode.Impulse);
+                // Vertical impluse to start arc
+                //rbody.AddForce(0, 10, 0, ForceMode.Impulse);
+                return;
+
+            case AttackType.Homing:
+                speed = 20;
+                lifeTime = 5;
+                return;
+        }
     }
 
     public void EndTrajectory(){

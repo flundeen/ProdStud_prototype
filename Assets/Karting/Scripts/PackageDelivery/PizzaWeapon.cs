@@ -106,7 +106,7 @@ public class PizzaWeapon : Weapon
         position.z += Mathf.Cos(aimAngle) * 2;
         position.y += 1;
 
-        //creates bullet
+        // Find inactive bullet
         Bullet_Script bullet = bulletPool.Find(b => b.isAlive == false);
 
         // If no inactive bullets, create one
@@ -117,6 +117,6 @@ public class PizzaWeapon : Weapon
         }
 
         //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
-        bullet.Shoot(new AttackInfo(playerId, primaryDamage), position, aimAngle);
+        bullet.Shoot(new AttackInfo(playerId, AttackType.Shot, primaryDamage), position, aimAngle);
     }
 }
