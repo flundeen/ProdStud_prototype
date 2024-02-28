@@ -22,10 +22,17 @@ public class Player : MonoBehaviour
     // Fields
     public int id;
     public bool isAlive;
+    public static List<Player> players = new List<Player>();
+
+    // Properties
+    public Vector3 Position { get { return car.transform.position; } }
 
     // Start is called before the first frame update
     void Start()
     {
+        id = players.Count;
+        players.Add(this);
+
         isAlive = true;
 
         // Car initialization

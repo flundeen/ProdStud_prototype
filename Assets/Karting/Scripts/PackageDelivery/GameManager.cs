@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     public float gameTime = 0;
     public bool packageIsPresent = false;
     public bool packagePickedUp = false;
-    public Player[] players = new Player[4];
+    public List<Player> players = new List<Player>();
     public int[] scores = new int[4];
     public List<ObjectivePickupZone> objPickupZones = new List<ObjectivePickupZone>();
     public List<ObjectiveDropoff> objDropoffZones = new List<ObjectiveDropoff>();
@@ -40,9 +40,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Gather players and set ids
-        players = FindObjectsOfType<Player>();
-        for (int i = 0; i < players.Length; i++)
-            players[i].id = i;
+        players = Player.players;
 
         StartGame();
     }

@@ -51,51 +51,74 @@ public class Bullet_Script : MonoBehaviour
                     rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
                 return;
 
-            case AttackType.Lob:
-                //if (rbody.velocity.magnitude <= speed)
-                //    rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
-                //rbody.velocity = new UnityEngine.Vector3(Mathf.Sin(direction) * speed, rbody.velocity.y - Time.fixedDeltaTime * 2, Mathf.Cos(direction) * speed);
-                //rbody.AddForce(0, -4 * Time.fixedDeltaTime, 0, ForceMode.VelocityChange);
+            case AttackType.Homing:
+                if (attackInfo.targetId > -1)
+                {
+                    Player target = GameManager.Instance.players[attackInfo.targetId];
+
+                    // Steer towards target
+                    UnityEngine.Vector3 desVel = UnityEngine.Vector3.Normalize(transform.position - target.Position) * speed;
+                    rbody.AddForce(-desVel + rbody.velocity, ForceMode.Impulse);
+                }
                 return;
 
-            case AttackType.Homing:
+            case AttackType.Lob:
                 return;
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        // Skip if inactive
-        if (!isAlive) return;
+        // Skip if inactive or hitting trigger
+        if (!isAlive || other.isTrigger) return;
 
-        // Car hitbox are boxcolliders only
-        if (other is BoxCollider)
+        switch (attackInfo.type)
         {
-            if (other.transform.parent != null)
-            {
-                // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
-                if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
+            case AttackType.Shot:
+            case AttackType.Homing:
+                // Car hitbox are boxcolliders only
+                if (other is BoxCollider)
                 {
-                    // If attack succeeds, stop bullet
-                    if (target.TakeDamage(attackInfo))
-                        EndTrajectory();
-                    else // If attack fails (self-attack), pass through collider
-                        return;
+                    if (other.transform.parent != null)
+                    {
+                        // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
+                        if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
+                        {
+                            // If attack fails (self-attack), dont stop bullet
+                            if (!target.TakeDamage(attackInfo))
+                                return;
+                        }
+                    }
                 }
-            }
+
+                EndTrajectory();
+                return;
+
+            case AttackType.Lob:
+                if (!isExploding) // Start explosion on contact
+                {
+                    isExploding = true;
+                    rbody.useGravity = false;
+                    rbody.velocity = UnityEngine.Vector3.zero;
+                    transform.localScale = UnityEngine.Vector3.one * 10; // Blast radius
+                }
+                else // Deal damage during explosion
+                {
+                    // Car hitbox are boxcolliders only
+                    if (other is BoxCollider)
+                    {
+                        if (other.transform.parent != null)
+                        {
+                            // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
+                            if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
+                                target.TakeDamage(attackInfo);
+                        }
+                    }
+
+                    // EndTrajectory not called here since multiple players may be hit, called on next frame
+                }
+                return;
         }
-
-        EndTrajectory();
-
-        // PREVIOUS CODE
-        //if(other.gameObject != shooter.GetComponentInChildren<CapsuleCollider>())
-        //{
-        //    EndTrajectory();
-        //    if(other.gameObject.tag == "Player")
-        //    {
-        //        other.gameObject.GetComponent<ArcadeKart>().TakeDamage(damage);
-        //    }
-        //}   
     }
 
     public void Shoot(AttackInfo info, UnityEngine.Vector3 pos, float aimAngle)
@@ -106,36 +129,39 @@ public class Bullet_Script : MonoBehaviour
         rbody.velocity = UnityEngine.Vector3.zero;
         direction = aimAngle;
         attackInfo = info;
+        speed = info.speed;
 
         switch (info.type)
         {
             case AttackType.Shot:
-                speed = 24;
-                maxSpeed = 25;
+                rbody.useGravity = false;
                 lifeTime = 3;
                 return;
 
             case AttackType.Lob:
-                speed = 12;
-                lifeTime = 100; // Lifetime is defined by arc
-                rbody.velocity = UnityEngine.Vector3.up * 2;
-                //rbody.AddForce(Mathf.Sin(direction) * speed, 100, Mathf.Cos(direction) * speed, ForceMode.Impulse);
-                // Vertical impluse to start arc
-                //rbody.AddForce(0, 10, 0, ForceMode.Impulse);
+                rbody.useGravity = true; // Creates arc trajectory
+                lifeTime = 2; // Need a better method for ending lob, lob lifetime is arc time + explosion time
+                rbody.AddForce(Mathf.Sin(direction) * speed, 5, Mathf.Cos(direction) * speed, ForceMode.Impulse);
                 return;
 
             case AttackType.Homing:
-                speed = 20;
+                rbody.useGravity = false;
                 lifeTime = 5;
+
+                // Start moving in original direction
+                rbody.maxLinearVelocity = speed;
+                rbody.velocity = new UnityEngine.Vector3(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed);
                 return;
         }
     }
 
     public void EndTrajectory(){
         isAlive = false;
+        isExploding = false;
         speed = 0;
         direction = 0;
-        gameObject.GetComponent<Rigidbody>().velocity = UnityEngine.Vector3.zero;
+        rbody.velocity = UnityEngine.Vector3.zero;
         transform.position = new UnityEngine.Vector3(transform.position.x, -20, transform.position.y);
+        transform.localScale = UnityEngine.Vector3.one * 0.25f; // Original bullet scale
     }
 }

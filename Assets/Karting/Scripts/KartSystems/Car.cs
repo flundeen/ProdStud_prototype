@@ -418,6 +418,7 @@ namespace KartGame.KartSystems
 
         public bool TakeDamage(AttackInfo info)
         {
+            Debug.Log(playerId + " " + info.attackerId);
             // If own attack or already dead, does not count
             if (baseStats.Health <= 0 || info.attackerId == playerId)
                 return false;
@@ -426,8 +427,8 @@ namespace KartGame.KartSystems
                 Die(info.attackerId);
             else
             {
-                Debug.Log("Player " + playerId + " has taken " + info.damage + " points of damage. " + baseStats.Health + " remaining.");
                 baseStats.Health -= info.damage;
+                Debug.Log("Player " + playerId + " has taken " + info.damage + " points of damage. " + baseStats.Health + " remaining.");
             }
 
             // Attack successful

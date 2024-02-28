@@ -15,14 +15,18 @@ public enum AttackType
 public struct AttackInfo
 {
     public int attackerId; // -1 if not player
+    public int targetId; // Used by homing attacks
     public AttackType type;
     public int damage;
+    public int speed;
 
-    public AttackInfo(int attackerId, AttackType type, int damage)
+    public AttackInfo(int attackerId, AttackType type, int damage, int speed, int targetId = -1)
     {
         this.attackerId = attackerId;
+        this.targetId = targetId;
         this.type = type;
         this.damage = damage;
+        this.speed = speed;
     }
 }
 

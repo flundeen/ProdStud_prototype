@@ -44,10 +44,10 @@ public class EventManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Player[] players = GameManager.Instance.players;
+        List<Player> players = GameManager.Instance.players;
 
         // if respawn timer ends, select spawn point for respawning player
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
             // If a player is not alive, update their respawn timer
             if (!players[i].isAlive)
