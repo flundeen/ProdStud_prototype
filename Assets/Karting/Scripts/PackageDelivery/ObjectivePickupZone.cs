@@ -23,7 +23,12 @@ public class ObjectivePickupZone : MonoBehaviour
     {
         players = new List<GameObject>();
         timers = new List<float>();
-        hasPackage = true;
+        hasPackage = false;
+    }
+
+    void Start()
+    {
+        GameManager.Instance.objPickupZones.Add(this);
     }
 
     // Update is called once per frame
@@ -36,6 +41,7 @@ public class ObjectivePickupZone : MonoBehaviour
             if (timers[0] <= 0)
             {
                 players[0].GetComponentInParent<KartPackage>().hasPackage = true;
+                GameManager.Instance.packagePickedUp = true;
                 sphere.GetComponent<Renderer>().enabled = false;
                 hasPackage = false;
                 Debug.Log("Package has been picked up");
@@ -80,6 +86,7 @@ public class ObjectivePickupZone : MonoBehaviour
         if (!hasPackage)
         {
             hasPackage = true;
+            GameManager.Instance.packageIsPresent = true;
             sphere.GetComponent<Renderer>().enabled = true;
         }
     }

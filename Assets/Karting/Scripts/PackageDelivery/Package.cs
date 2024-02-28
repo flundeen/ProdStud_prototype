@@ -16,6 +16,7 @@ public class Package : MonoBehaviour
         if (collision.tag == "Player" && !collision.GetComponentInParent<KartPackage>().hasPackage)
         {
             collision.GetComponentInParent<KartPackage>().hasPackage = true;
+            GameManager.Instance.packagePickedUp = true;
             Destroy(gameObject);
         }
     }
