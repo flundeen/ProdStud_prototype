@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 217996450180499412}
   m_Layer: 0
   m_Name: PlayerPizza
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -549,3 +549,17 @@ MonoBehaviour:
   gadgetCooldown: 15
   bulletPrefab: {fileID: 3230878724729826437, guid: b53e5fa1b15d71245af49e63b81466b4,
     type: 3}
+  speedBoostEffect:
+    MaxHealth: 0
+    Acceleration: 15
+    TopSpeed: 20
+    Steer: 0
+    Weight: 0
+    subStats:
+      ReverseSpeed: 0
+      ReverseAcceleration: 0
+      AccelerationCurve: 0
+      Braking: 0
+      CoastingDrag: 0
+      Grip: 0
+      AddedGravity: 0

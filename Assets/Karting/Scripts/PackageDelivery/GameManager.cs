@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public enum ScoreEvent
 {
@@ -18,8 +19,13 @@ public class GameManager : MonoBehaviour
 
     // Fields
     public float gameTime = 0;
+    public bool packageIsPresent = false;
+    public bool packagePickedUp = false;
     public Player[] players = new Player[4];
     public int[] scores = new int[4];
+    public List<ObjectivePickupZone> objPickupZones = new List<ObjectivePickupZone>();
+    public List<ObjectiveDropoff> objDropoffZones = new List<ObjectiveDropoff>();
+    public TMP_Text timerText;
 
     void Awake()
     {
@@ -34,10 +40,11 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Gather players and set ids
-        // I know this is slow, I'll figure out a better way later
         players = FindObjectsOfType<Player>();
         for (int i = 0; i < players.Length; i++)
             players[i].id = i;
+
+        StartGame();
     }
 
     // Update is called once per frame
@@ -46,8 +53,18 @@ public class GameManager : MonoBehaviour
         if (gameTime > 0)
         {
             gameTime -= Time.deltaTime;
+            timerText.text = ((int)(gameTime / 60)).ToString() + ":" + ((int)(gameTime % 60)).ToString("D2");
 
             // process game state
+            if (!packageIsPresent)
+            {
+                objPickupZones[Random.Range(0, objPickupZones.Count)].AddPackage();
+            }
+
+            if (packagePickedUp)
+            {
+                objDropoffZones[0].dropoffMaterial.color = Color.blue;
+            }
 
             if (gameTime <= 0)
                 EndGame();
@@ -59,6 +76,8 @@ public class GameManager : MonoBehaviour
     {
         // setup game here
         gameTime = 300f; // 5 minutes
+
+
     }
 
     // End round, stop game and disable movement

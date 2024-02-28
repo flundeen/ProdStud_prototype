@@ -7,13 +7,18 @@ public class ObjectiveDropoff : MonoBehaviour
     [SerializeField]
     private float scoreTimer = 1.0f;
     [SerializeField]
-    private Material dropoffMaterial;
+    public Material dropoffMaterial;
 
     private bool scored;
 
     void Awake()
     {
         scored = false;
+    }
+
+    void Start()
+    {
+        GameManager.Instance.objDropoffZones.Add(this);
     }
 
     // Update is called once per frame
@@ -35,12 +40,16 @@ public class ObjectiveDropoff : MonoBehaviour
         }
     }
 
-        private void OnTriggerEnter(Collider collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.tag == "Player" && collision.GetComponentInParent<KartPackage>().hasPackage)
         {
             collision.GetComponentInParent<KartPackage>().hasPackage = false;
+            GameManager.Instance.packageIsPresent = false;
+            GameManager.Instance.packagePickedUp = false;
             scored = true;
+
+
         }
     }
 }
