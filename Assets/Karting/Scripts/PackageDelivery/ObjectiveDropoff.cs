@@ -49,7 +49,7 @@ public class ObjectiveDropoff : MonoBehaviour
             GameManager.Instance.packagePickedUp = false;
             scored = true;
 
-
+            GameManager.Instance.AwardPoints(collision.GetComponentInParent<Player>().id, ScoreEvent.Delivery);
         }
     }
 }
