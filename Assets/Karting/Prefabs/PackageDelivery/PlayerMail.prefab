@@ -81,8 +81,6 @@ MonoBehaviour:
   camera: {fileID: 7406388781123673574}
   car: {fileID: 1674142606626507770}
   weapon: {fileID: 8628167652500337978}
-  id: 0
-  isAlive: 0
 --- !u!114 &217996450180499412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,6 +332,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: f57c716d9cb073e4faf570cb01f4dd70,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3169a10f009e3424c9764e72eeceecd5, type: 2}
     - target: {fileID: 919132149155446097, guid: f57c716d9cb073e4faf570cb01f4dd70,
         type: 3}
       propertyPath: m_Name
@@ -376,28 +379,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
+      propertyPath: m_Size.x
+      value: 1.2031143
+      objectReference: {fileID: 0}
+    - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
       propertyPath: m_Size.y
-      value: 1.3261214
+      value: 1.6607186
       objectReference: {fileID: 0}
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_Size.z
-      value: 3.2035756
+      value: 3.5037496
+      objectReference: {fileID: 0}
+    - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_Center.x
+      value: -0.0038519204
       objectReference: {fileID: 0}
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_Center.y
-      value: 0.6230604
+      value: 0.79035896
       objectReference: {fileID: 0}
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_Center.z
-      value: 0.13806295
+      value: 0.019923568
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810912517523753821, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4810912518023495582, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4810912518991602690, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
@@ -477,8 +495,28 @@ PrefabInstance:
       objectReference: {fileID: 3330346342605836255}
     - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
+      propertyPath: baseStats.Steer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: baseStats.Weight
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: baseStats.TopSpeed
+      value: 12.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
       propertyPath: baseStats.MaxHealth
-      value: 80
+      value: 125
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: baseStats.Acceleration
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4810912518991602713, guid: 19954de30401f73428254541a9ad156e,
         type: 3}

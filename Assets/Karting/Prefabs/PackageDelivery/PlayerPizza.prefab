@@ -81,8 +81,6 @@ MonoBehaviour:
   camera: {fileID: 7406388781123673574}
   car: {fileID: 1674142606626507770}
   weapon: {fileID: 3814835928494329667}
-  id: 0
-  isAlive: 0
 --- !u!114 &217996450180499412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,6 +332,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 3ee6998dd060bf84e82a072811a71fa6,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c22329746e05f24b8c40369691fa40f, type: 2}
     - target: {fileID: 919132149155446097, guid: 3ee6998dd060bf84e82a072811a71fa6,
         type: 3}
       propertyPath: m_Name
@@ -382,7 +385,7 @@ PrefabInstance:
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_Size.z
-      value: 3.2035756
+      value: 3.2350063
       objectReference: {fileID: 0}
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
@@ -392,12 +395,17 @@ PrefabInstance:
     - target: {fileID: 2799397090126219162, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_Center.z
-      value: 0.13806295
+      value: 0.1412031
+      objectReference: {fileID: 0}
+    - target: {fileID: 4810912517523753821, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4810912518023495582, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4810912518991602690, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
@@ -475,6 +483,11 @@ PrefabInstance:
       propertyPath: kartVisual
       value: 
       objectReference: {fileID: 3234917800834793557}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: baseStats.Weight
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: baseStats.MaxHealth

@@ -52,6 +52,8 @@ public class PizzaWeapon : Weapon
     // Fire 5 shots/sec at 40 DPS (8 dmg each) whle active
     public override void OnPrimary(InputValue val)
     {
+        if (!enabled) return;
+
         base.OnPrimary(val);
     }
 
@@ -60,6 +62,8 @@ public class PizzaWeapon : Weapon
     // Cooldown: 15s (after boost expires)
     public override void OnGadget()
     {
+        if (!enabled) return;
+
         if (gadgetClock.IsReady)
         {
             isBoostActive = true;

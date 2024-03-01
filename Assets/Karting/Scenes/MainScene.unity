@@ -2549,6 +2549,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPizza
       objectReference: {fileID: 0}
+    - target: {fileID: 6225265042842223710, guid: 23683ef1cb807f044aaadd8609f4cb99,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

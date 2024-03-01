@@ -20,9 +20,11 @@ public class Player : MonoBehaviour
     private Vector2 cameraOffset = Vector2.zero;
 
     // Fields
-    public int id;
-    public bool isAlive;
     public static List<Player> players = new List<Player>();
+    [NonSerialized]
+    public int id;
+    [NonSerialized]
+    public bool isAlive;
 
     // Properties
     public Vector3 Position { get { return car.transform.position; } }
@@ -38,12 +40,20 @@ public class Player : MonoBehaviour
         // Car initialization
         car.AssignOwner(this);
         // Hook car death to player death event
-        car.deathCallback += (int attackerId) => EventManager.Instance.PlayerDeath(this, new ScoreEventArgs
+        car.deathCallback += (int attackerId) =>
         {
-            scoreEvent = (car.HasPackage ? ScoreEvent.CarrierKill : ScoreEvent.Kill),
-            scorerId = attackerId,
-            deadPlayerId = id
-        });
+            // Disable weapons
+            weapon.enabled = false;
+
+            // Alert EventManager of player death
+            EventManager.Instance.PlayerDeath(this, new ScoreEventArgs
+            {
+                scoreEvent = (car.HasPackage ? ScoreEvent.CarrierKill : ScoreEvent.Kill),
+                scorerId = attackerId,
+                deadPlayerId = id
+            });
+        };
+        
 
         // Weapon initialization
         if (weapon != null) weapon.Initialize(id, car);
@@ -64,6 +74,7 @@ public class Player : MonoBehaviour
         car.transform.SetPositionAndRotation(pos, rot);
         car.ResetCar();
         weapon.ResetWeapons();
+        weapon.enabled = true;
     }
 
     void GatherInputs()

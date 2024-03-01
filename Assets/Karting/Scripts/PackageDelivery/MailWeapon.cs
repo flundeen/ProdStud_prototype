@@ -50,6 +50,8 @@ public class MailWeapon : Weapon
     // 50 dmg, 0.5s between shots, charge for up to 0.5s, 0.5s from release until impact
     public override void OnPrimary(InputValue val)
     {
+        if (!enabled) return;
+
         base.OnPrimary(val);
     }
 
@@ -59,6 +61,8 @@ public class MailWeapon : Weapon
     // Cooldown: 20s
     public override void OnGadget()
     {
+        if (!enabled) return;
+
         // Gadget cooldown must be over
         if (!gadgetClock.IsReady) return;
         gadgetClock.Start();
@@ -140,5 +144,23 @@ public class MailWeapon : Weapon
         int speed = (int)Mathf.Round(Mathf.Lerp(2f, 15f, primaryCharge)); // Min-max ranges
 
         bullet.Shoot(new AttackInfo(playerId, AttackType.Lob, primaryDamage, speed), position, aimAngle);
+    }
+
+    public override void ResetWeapons()
+    {
+        // Resets cooldown clocks
+        base.ResetWeapons();
+
+        // Reset bullet pool
+        foreach (Bullet_Script b in bulletPool)
+        {
+            // Reset all bullets to inactive state
+            if (b.isAlive)
+                b.EndTrajectory();
+        }
+
+        // Reset primary data
+        isPrimaryActive = false;
+        primaryCharge = 0;
     }
 }

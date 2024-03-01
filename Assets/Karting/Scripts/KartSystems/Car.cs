@@ -418,7 +418,6 @@ namespace KartGame.KartSystems
 
         public bool TakeDamage(AttackInfo info)
         {
-            Debug.Log(playerId + " " + info.attackerId);
             // If own attack or already dead, does not count
             if (baseStats.Health <= 0 || info.attackerId == playerId)
                 return false;

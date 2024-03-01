@@ -47,8 +47,6 @@ public class Bullet_Script : MonoBehaviour
         switch (attackInfo.type)
         {
             case AttackType.Shot:
-                if (rbody.velocity.magnitude <= speed)
-                    rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
                 return;
 
             case AttackType.Homing:
@@ -56,9 +54,10 @@ public class Bullet_Script : MonoBehaviour
                 {
                     Player target = GameManager.Instance.players[attackInfo.targetId];
 
-                    // Steer towards target
-                    UnityEngine.Vector3 desVel = UnityEngine.Vector3.Normalize(transform.position - target.Position) * speed;
-                    rbody.AddForce(-desVel + rbody.velocity, ForceMode.Impulse);
+                    // Steer towards target, excluding Y axis
+                    UnityEngine.Vector2 desVel = new (transform.position.x - target.Position.x, transform.position.z - target.Position.z);
+                    desVel = desVel.normalized * speed;
+                    rbody.AddForce(rbody.velocity.x - desVel.x, 0, rbody.velocity.z - desVel.y, ForceMode.Impulse);
                 }
                 return;
 
@@ -72,25 +71,25 @@ public class Bullet_Script : MonoBehaviour
         // Skip if inactive or hitting trigger
         if (!isAlive || other.isTrigger) return;
 
+        // Car hitbox are boxcolliders only
+        if (other is BoxCollider)
+        {
+            // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
+            if (other.transform.parent != null)
+            {
+                if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
+                {
+                    // If attack fails (self-attack), dont stop bullet
+                    if (!target.TakeDamage(attackInfo))
+                        return;
+                }
+            }
+        }
+
         switch (attackInfo.type)
         {
             case AttackType.Shot:
             case AttackType.Homing:
-                // Car hitbox are boxcolliders only
-                if (other is BoxCollider)
-                {
-                    if (other.transform.parent != null)
-                    {
-                        // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
-                        if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
-                        {
-                            // If attack fails (self-attack), dont stop bullet
-                            if (!target.TakeDamage(attackInfo))
-                                return;
-                        }
-                    }
-                }
-
                 EndTrajectory();
                 return;
 
@@ -102,21 +101,7 @@ public class Bullet_Script : MonoBehaviour
                     rbody.velocity = UnityEngine.Vector3.zero;
                     transform.localScale = UnityEngine.Vector3.one * 10; // Blast radius
                 }
-                else // Deal damage during explosion
-                {
-                    // Car hitbox are boxcolliders only
-                    if (other is BoxCollider)
-                    {
-                        if (other.transform.parent != null)
-                        {
-                            // Attempt to call ArcadeKart's TakeDamage by getting hitbox's parent's ArcadeKart component
-                            if (other.transform.parent.TryGetComponent<ArcadeKart>(out var target))
-                                target.TakeDamage(attackInfo);
-                        }
-                    }
-
-                    // EndTrajectory not called here since multiple players may be hit, called on next frame
-                }
+                // If exploding, deals damage to any colliders entering until expiration
                 return;
         }
     }
@@ -136,6 +121,7 @@ public class Bullet_Script : MonoBehaviour
             case AttackType.Shot:
                 rbody.useGravity = false;
                 lifeTime = 3;
+                rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
                 return;
 
             case AttackType.Lob:
