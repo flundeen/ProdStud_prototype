@@ -36,7 +36,7 @@ public class AiController : MonoBehaviour
         switch (behaviorType)
         {
             case AiBehavior.Sit:
-                return;
+                break;
 
             case AiBehavior.SitAttack: // Alternates attacking and resting every second
                 // Update attack timer
@@ -51,10 +51,10 @@ public class AiController : MonoBehaviour
 
                 // Send attack data
                 weapon.OnPrimary(isAttacking ? 1 : 0);
-                return;
+                break;
 
             case AiBehavior.FollowPath: 
-                return;
+                break;
         }
     }
 }

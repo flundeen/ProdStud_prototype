@@ -19,6 +19,10 @@ public class Player : MonoBehaviour
     private float turnVal = 0;
     private Vector2 cameraOffset = Vector2.zero;
 
+    // Audio
+    private AudioSource audioSrc;
+    public AudioClip honkSFX;
+
     // Fields
     public static List<Player> players = new List<Player>();
     [NonSerialized]
@@ -53,10 +57,11 @@ public class Player : MonoBehaviour
                 deadPlayerId = id
             });
         };
-        
 
         // Weapon initialization
         if (weapon != null) weapon.Initialize(id, car);
+
+        audioSrc = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -108,5 +113,11 @@ public class Player : MonoBehaviour
     void OnMenuToggle()
     {
         EventManager.Instance.ToggleMenu();
+    }
+
+    void OnHonk()
+    {
+        if (audioSrc != null && honkSFX != null)
+            audioSrc.PlayOneShot(honkSFX);
     }
 }

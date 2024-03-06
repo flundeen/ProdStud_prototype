@@ -16,14 +16,17 @@ public class Bullet_Script : MonoBehaviour
     public bool isAlive = false;
     public AttackInfo attackInfo;
 
+    // Audio Fields
+    private AudioSource audioSrc;
+    public AudioClip shootSFX;
+    public AudioClip impactSFX;
+
     // Lob Fields
     public bool isExploding = false;
     
     void Awake()
     {
-        //UnityEngine.Quaternion target = UnityEngine.Quaternion.Euler(0, direction + 90, 0);
-
-        //gameObject.GetComponent<Transform>().rotation = target;
+        audioSrc = GetComponent<AudioSource>();
     }
 
     void FixedUpdate()
@@ -47,7 +50,7 @@ public class Bullet_Script : MonoBehaviour
         switch (attackInfo.type)
         {
             case AttackType.Shot:
-                return;
+                break;
 
             case AttackType.Homing:
                 if (attackInfo.targetId > -1)
@@ -59,10 +62,10 @@ public class Bullet_Script : MonoBehaviour
                     desVel = desVel.normalized * speed;
                     rbody.AddForce(rbody.velocity.x - desVel.x, 0, rbody.velocity.z - desVel.y, ForceMode.Impulse);
                 }
-                return;
+                break;
 
             case AttackType.Lob:
-                return;
+                break;
         }
     }
 
@@ -86,12 +89,18 @@ public class Bullet_Script : MonoBehaviour
             }
         }
 
+        // Collision behavior based on attack type
         switch (attackInfo.type)
         {
             case AttackType.Shot:
+                if (audioSrc != null && impactSFX != null)
+                    audioSrc.PlayOneShot(impactSFX);
+                EndTrajectory();
+                break;
+
             case AttackType.Homing:
                 EndTrajectory();
-                return;
+                break;
 
             case AttackType.Lob:
                 if (!isExploding) // Start explosion on contact
@@ -100,9 +109,13 @@ public class Bullet_Script : MonoBehaviour
                     rbody.useGravity = false;
                     rbody.velocity = UnityEngine.Vector3.zero;
                     transform.localScale = UnityEngine.Vector3.one * 10; // Blast radius
+
+                    // Play impact audio on explosion
+                    if (audioSrc != null && impactSFX != null)
+                        audioSrc.PlayOneShot(impactSFX);
                 }
                 // If exploding, deals damage to any colliders entering until expiration
-                return;
+                break;
         }
     }
 
@@ -116,19 +129,23 @@ public class Bullet_Script : MonoBehaviour
         attackInfo = info;
         speed = info.speed;
 
+        // Shoot SFX
+        if (audioSrc != null && shootSFX != null)
+            audioSrc.PlayOneShot(shootSFX);
+
         switch (info.type)
         {
             case AttackType.Shot:
                 rbody.useGravity = false;
                 lifeTime = 3;
                 rbody.AddForce(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed, ForceMode.Impulse);
-                return;
+                break;
 
             case AttackType.Lob:
                 rbody.useGravity = true; // Creates arc trajectory
                 lifeTime = 2; // Need a better method for ending lob, lob lifetime is arc time + explosion time
                 rbody.AddForce(Mathf.Sin(direction) * speed, 5, Mathf.Cos(direction) * speed, ForceMode.Impulse);
-                return;
+                break;
 
             case AttackType.Homing:
                 rbody.useGravity = false;
@@ -137,11 +154,20 @@ public class Bullet_Script : MonoBehaviour
                 // Start moving in original direction
                 rbody.maxLinearVelocity = speed;
                 rbody.velocity = new UnityEngine.Vector3(Mathf.Sin(direction) * speed, 0, Mathf.Cos(direction) * speed);
-                return;
+                break;
         }
     }
 
     public void EndTrajectory(){
+
+        // Homing bullets always play impact SFX when expiring
+        if (attackInfo.type == AttackType.Homing)
+        {
+            if (audioSrc != null && impactSFX != null)
+                audioSrc.PlayOneShot(impactSFX);
+        }
+
+        // Reset variables/flags and rigidbody
         isAlive = false;
         isExploding = false;
         speed = 0;

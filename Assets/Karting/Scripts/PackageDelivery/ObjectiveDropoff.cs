@@ -11,9 +11,13 @@ public class ObjectiveDropoff : MonoBehaviour
 
     private bool scored;
 
+    private AudioSource audioSrc;
+    public AudioClip dropoffSFX;
+
     void Awake()
     {
         scored = false;
+        audioSrc = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -50,6 +54,9 @@ public class ObjectiveDropoff : MonoBehaviour
             scored = true;
 
             GameManager.Instance.AwardPoints(collision.GetComponentInParent<Player>().id, ScoreEvent.Delivery);
+
+            if (audioSrc != null && dropoffSFX != null)
+                audioSrc.PlayOneShot(dropoffSFX);
         }
     }
 }

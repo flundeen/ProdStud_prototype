@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 4829887855663226560}
   - component: {fileID: 3716819412523690408}
   - component: {fileID: 217996450180499412}
+  - component: {fileID: 8616124998705992352}
   m_Layer: 0
   m_Name: PlayerMail
   m_TagString: Untagged
@@ -81,6 +82,7 @@ MonoBehaviour:
   camera: {fileID: 7406388781123673574}
   car: {fileID: 1674142606626507770}
   weapon: {fileID: 8628167652500337978}
+  honkSFX: {fileID: 8300000, guid: 3d1de2dfeddb7cd4094de9bd824d4bb5, type: 3}
 --- !u!114 &217996450180499412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +114,102 @@ MonoBehaviour:
   m_DefaultActionMap: Kart
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 7406388781123673574}
+--- !u!82 &8616124998705992352
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6225265042842223710}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8118909693491654483
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,6 +465,31 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4829887855663226560}
     m_Modifications:
+    - target: {fileID: 105302564001159096, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 403965903110040194, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 4ee0df27527f3c04ca4d992be2aba244, type: 3}
+    - target: {fileID: 403965903110040194, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 403965903139369922, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 403965903490506787, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 498120041215648974, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: m_LocalPosition.z
@@ -406,6 +529,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Center.z
       value: 0.019923568
+      objectReference: {fileID: 0}
+    - target: {fileID: 3395658345980596717, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3774080072296721653, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4810912517523753821, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
@@ -490,9 +623,19 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
+      propertyPath: damagedSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: c887011e63ba9c6488bce70c96920f0d, type: 3}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
       propertyPath: kartVisual
       value: 
       objectReference: {fileID: 3330346342605836255}
+    - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
+        type: 3}
+      propertyPath: pkgTimerSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: ff51892007a4d824e9788cfdcb94443b, type: 3}
     - target: {fileID: 4810912518991602694, guid: 19954de30401f73428254541a9ad156e,
         type: 3}
       propertyPath: baseStats.Steer
@@ -590,5 +733,7 @@ MonoBehaviour:
   primaryDamage: 50
   primaryCooldown: 0.5
   gadgetCooldown: 20
-  bulletPrefab: {fileID: 3230878724729826437, guid: b53e5fa1b15d71245af49e63b81466b4,
+  lobPrefab: {fileID: 3230878724729826437, guid: b1db5ef99ecb66748b64396bcee38985,
+    type: 3}
+  dronePrefab: {fileID: 3230878724729826437, guid: 46cdfbb5a95de2b4ea61594d5a7a7b6b,
     type: 3}

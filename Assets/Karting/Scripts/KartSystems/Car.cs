@@ -239,6 +239,12 @@ namespace KartGame.KartSystems
         private float packageTimer = 20f;
         public bool HasPackage { get { return kartPkg.hasPackage; } }
 
+        // Audio Fields
+        private AudioSource audioSrc;
+        public AudioClip damagedSFX;
+        public AudioClip deathSFX;
+        public AudioClip pkgTimerSFX;
+
         // Event fields
         public Action<int> deathCallback;
 
@@ -324,8 +330,9 @@ namespace KartGame.KartSystems
                 }
             }
 
-            transform.parent?.GetComponent<Player>();
+            transform.parent?.GetComponent<Player>(); // Is this supposed to do anything??
             kartPkg = GetComponent<KartPackage>();
+            audioSrc = GetComponent<AudioSource>();
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -393,14 +400,27 @@ namespace KartGame.KartSystems
 
             UpdateDriftVFXOrientation();
 
+            // Update package logic
             if (kartPkg.hasPackage)
             {
                 package.GetComponent<Renderer>().enabled = true;
+                float lastTime = packageTimer;
                 packageTimer -= Time.fixedDeltaTime;
+
+                // Has package timer expired?
                 if (packageTimer <= 0)
                 {
                     Debug.Log("Package exploded!");
                     Die(-1); // -1 for non-player attack
+                }
+                else
+                {
+                    // Play timer tick SFX once per second
+                    if (Mathf.Ceil(lastTime) > Mathf.Ceil(packageTimer))
+                    {
+                        if (audioSrc != null && pkgTimerSFX != null)
+                            audioSrc.PlayOneShot(pkgTimerSFX);
+                    }
                 }
             }
             else
@@ -428,6 +448,8 @@ namespace KartGame.KartSystems
             {
                 baseStats.Health -= info.damage;
                 Debug.Log("Player " + playerId + " has taken " + info.damage + " points of damage. " + baseStats.Health + " remaining.");
+                if (audioSrc != null && damagedSFX != null)
+                    audioSrc.PlayOneShot(damagedSFX);
             }
 
             // Attack successful
@@ -451,6 +473,10 @@ namespace KartGame.KartSystems
                 GameManager.Instance.packagePickedUp = false;
                 kartPkg.hasPackage = false;
             }
+
+            // Death SFX
+            if (audioSrc != null && deathSFX != null)
+                audioSrc.PlayOneShot(deathSFX);
 
             // Turn off visibility
             // FixedUpdate processing skipped when dead

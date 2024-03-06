@@ -6,17 +6,20 @@ using UnityEngine.InputSystem;
 public class MailWeapon : Weapon
 {
     // Mail Car Fields
-    public GameObject bulletPrefab;
-    private List<Bullet_Script> bulletPool;
+    public GameObject lobPrefab;
+    private List<Bullet_Script> lobPool;
+    public GameObject dronePrefab;
+    private List<Bullet_Script> dronePool;
     private float primaryCharge; // Float between 0-1, 1 being fully charged
 
     // Start is called before the first frame update
     void Start()
     {
-        // Create bullet pool for primary weapon
-        bulletPool = new List<Bullet_Script>();
-        GenerateBullets(5);
-
+        // Create bullet pools for primary and gadget
+        lobPool = new List<Bullet_Script>();
+        GenerateBullets(5, lobPrefab, lobPool);
+        dronePool = new List<Bullet_Script>();
+        GenerateBullets(3, dronePrefab, dronePool);
     }
 
     // Update is called once per frame
@@ -82,13 +85,13 @@ public class MailWeapon : Weapon
             position.y += 1;
 
             // Find inactive bullet
-            Bullet_Script bullet = bulletPool.Find(b => !b.isAlive);
+            Bullet_Script bullet = dronePool.Find(b => !b.isAlive);
 
             // If no inactive bullets, create one
             if (bullet == null)
             {
-                GenerateBullets(1);
-                bullet = bulletPool[^1]; // This is simplified from (bulletPool.Count - 1)??? if it works it works ig
+                GenerateBullets(1, dronePrefab, dronePool);
+                bullet = lobPool[^1]; // This is simplified from (bulletPool.Count - 1)??? if it works it works ig
             }
 
             // Search for closest player
@@ -115,10 +118,10 @@ public class MailWeapon : Weapon
         }
     }
 
-    void GenerateBullets(int count)
+    void GenerateBullets(int count, GameObject prefab, List<Bullet_Script> pool)
     {
         for (int i = 0; i < count; i++)
-            bulletPool.Add(Instantiate(bulletPrefab, new Vector3(i * 4, -10, 5), bulletPrefab.transform.rotation).GetComponent<Bullet_Script>());
+            pool.Add(Instantiate(prefab, new Vector3(i * 4, -10, 5), prefab.transform.rotation).GetComponent<Bullet_Script>());
     }
 
     void FirePrimary()
@@ -131,13 +134,13 @@ public class MailWeapon : Weapon
         float aimAngle = Mathf.Atan2(aimVector.x, aimVector.y) + (car.transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
 
         // Find inactive bullet
-        Bullet_Script bullet = bulletPool.Find(b => !b.isAlive);
+        Bullet_Script bullet = lobPool.Find(b => !b.isAlive);
 
         // If no inactive bullets, create one
         if (bullet == null)
         {
-            GenerateBullets(1);
-            bullet = bulletPool[^1]; // This is simplified from (bulletPool.Count - 1)??? if it works it works ig
+            GenerateBullets(1, lobPrefab, lobPool);
+            bullet = lobPool[^1]; // This is simplified from (bulletPool.Count - 1)??? if it works it works ig
         }
 
         // Set range using primaryCharge
@@ -152,7 +155,7 @@ public class MailWeapon : Weapon
         base.ResetWeapons();
 
         // Reset bullet pool
-        foreach (Bullet_Script b in bulletPool)
+        foreach (Bullet_Script b in lobPool)
         {
             // Reset all bullets to inactive state
             if (b.isAlive)
