@@ -9,7 +9,8 @@ public enum AttackType
     Shot,
     Homing,
     Lob,
-    Ram
+    Ram,
+    Hazard
 }
 
 public struct AttackInfo

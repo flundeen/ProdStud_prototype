@@ -361,6 +361,11 @@ namespace KartGame.KartSystems
             // Skip processing if not alive
             if (baseStats.Health <= 0) return;
 
+            if(transform.position.y <= -5)
+            {
+                TakeDamage(new AttackInfo(-1, AttackType.Hazard, (int)baseStats.Health, 0));
+            }
+
             UpdateSuspensionParams(FrontLeftWheel);
             UpdateSuspensionParams(FrontRightWheel);
             UpdateSuspensionParams(RearLeftWheel);
