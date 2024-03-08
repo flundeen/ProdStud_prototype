@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dc72a9a7cc4b73a46964561121247c27, type: 2}
+  - {fileID: 2100000, guid: 4e3064bbf91bc3744b54db9696e094a3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreTimer: 0.1
   dropoffMaterial: {fileID: 2100000, guid: dc72a9a7cc4b73a46964561121247c27, type: 2}
+  plane: {fileID: 6991376368810653073}
   dropoffSFX: {fileID: 8300000, guid: 3f004ac1e56f64a48b8a0fae293d2071, type: 3}
 --- !u!82 &3649069989197635362
 AudioSource:

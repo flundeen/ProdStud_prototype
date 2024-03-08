@@ -26,7 +26,7 @@ public class PizzaWeapon : Weapon
         GenerateBullets(20);
 
         // Define gadget parameters
-        speedBoost = new ArcadeKart.StatPowerup(speedBoostEffect, "On-Time Speed Boost", 5, () => isBoostActive = false);
+        speedBoost = new ArcadeKart.StatPowerup(speedBoostEffect, "On-Time Speed Boost", 5);
     }
 
     // Update is called once per frame
@@ -34,8 +34,7 @@ public class PizzaWeapon : Weapon
     {
         // Update weapon cooldowns
         primaryClock.Update(Time.deltaTime);
-        if (!isBoostActive)
-            gadgetClock.Update(Time.deltaTime); // only update while inactive
+        gadgetClock.Update(Time.deltaTime);
 
         // Fire primary while input is held
         if (isPrimaryActive)

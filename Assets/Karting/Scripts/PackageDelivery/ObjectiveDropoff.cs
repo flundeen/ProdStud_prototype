@@ -8,6 +8,11 @@ public class ObjectiveDropoff : MonoBehaviour
     private float scoreTimer = 1.0f;
     [SerializeField]
     public Material dropoffMaterial;
+    [SerializeField]
+    private GameObject plane;
+    private Material planeMat;
+    private Color scoredColor = Color.green;
+    private Color inactiveColor = Color.red;
 
     private bool scored;
 
@@ -18,6 +23,7 @@ public class ObjectiveDropoff : MonoBehaviour
     {
         scored = false;
         audioSrc = GetComponent<AudioSource>();
+        planeMat = plane.GetComponent<Renderer>().material;
     }
 
     void Start()
@@ -30,6 +36,7 @@ public class ObjectiveDropoff : MonoBehaviour
     { 
         if (scored)
         {
+            planeMat.color = scoredColor;
             dropoffMaterial.color = Color.green;
             scoreTimer -= Time.deltaTime;
             if (scoreTimer < 0)
@@ -39,6 +46,7 @@ public class ObjectiveDropoff : MonoBehaviour
         }
         else
         {
+            planeMat.color = inactiveColor;
             dropoffMaterial.color = Color.gray;
             scoreTimer = 1.0f;
         }

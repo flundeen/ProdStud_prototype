@@ -692,7 +692,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   primaryDamage: 8
   primaryCooldown: 0.2
-  gadgetCooldown: 15
+  gadgetCooldown: 20
   bulletPrefab: {fileID: 3230878724729826437, guid: b53e5fa1b15d71245af49e63b81466b4,
     type: 3}
   speedBoostEffect:

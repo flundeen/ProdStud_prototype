@@ -23,12 +23,11 @@ namespace KartGame.KartSystems
 
             }
 
-            public StatPowerup(ArcadeKart.Stats modifiers, string id, float maxTime, Action callback)
+            public StatPowerup(ArcadeKart.Stats modifiers, string id, float maxTime)
             {
                 this.modifiers = modifiers;
                 this.PowerUpID = id;
                 this.MaxTime = maxTime;
-                this.callback = callback;
             }
         }
 
@@ -508,7 +507,6 @@ namespace KartGame.KartSystems
                 if(p.ElapsedTime > p.MaxTime)
                 {
                     Debug.Log("Removing " + p.PowerUpID);
-                    p.callback();
                 }
                 return p.ElapsedTime > p.MaxTime; 
             });

@@ -11,6 +11,13 @@ public class ObjectivePickupZone : MonoBehaviour
     private Material packageMaterial;
     [SerializeField]
     private GameObject sphere;
+    [SerializeField]
+    private GameObject plane;
+    private Material planeMat;
+    private Color inactiveColor = Color.black;
+    private Color waitingColor = Color.yellow;
+    private Color loadingColor = Color.cyan;
+    private Color stoppedColor = Color.red;
 
     private bool hasPackage;
     private List<GameObject> players;
@@ -30,6 +37,7 @@ public class ObjectivePickupZone : MonoBehaviour
         timers = new List<float>();
         hasPackage = false;
         audioSrc = GetComponent<AudioSource>();
+        planeMat = plane.GetComponent<Renderer>().material;
 
         if (audioSrc != null && loadingSFX != null) 
             audioSrc.clip = loadingSFX;
@@ -51,12 +59,14 @@ public class ObjectivePickupZone : MonoBehaviour
             if (audioSrc != null && loadingSFX != null)
                 if (!audioSrc.isPlaying) audioSrc.Play();
 
+            planeMat.color = loadingColor;
             packageMaterial.color = Color.green;
             timers[0] -= Time.deltaTime;
             if (timers[0] <= 0)
             {
                 players[0].GetComponentInParent<KartPackage>().hasPackage = true;
                 GameManager.Instance.packagePickedUp = true;
+                planeMat.color = inactiveColor;
                 sphere.GetComponent<Renderer>().enabled = false;
                 hasPackage = false;
                 Debug.Log("Package has been picked up");
@@ -72,6 +82,8 @@ public class ObjectivePickupZone : MonoBehaviour
         }
         else if (players.Count > 1)
         {
+            if (hasPackage)
+                planeMat.color = stoppedColor;
             packageMaterial.color = Color.yellow;
 
             if (audioSrc != null && loadingSFX != null && pickupSFXdelay <= 0)
@@ -79,6 +91,10 @@ public class ObjectivePickupZone : MonoBehaviour
         }
         else
         {
+            if (hasPackage)
+                planeMat.color = waitingColor;
+            else
+                planeMat.color = inactiveColor;
             packageMaterial.color = Color.gray;
             
             if (audioSrc != null && loadingSFX != null && pickupSFXdelay <= 0)
@@ -117,6 +133,7 @@ public class ObjectivePickupZone : MonoBehaviour
             hasPackage = true;
             GameManager.Instance.packageIsPresent = true;
             sphere.GetComponent<Renderer>().enabled = true;
+            planeMat.color = waitingColor;
         }
     }
 }
