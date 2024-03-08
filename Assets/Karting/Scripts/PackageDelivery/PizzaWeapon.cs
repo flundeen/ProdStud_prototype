@@ -35,7 +35,6 @@ public class PizzaWeapon : Weapon
         // Update weapon cooldowns
         primaryClock.Update(Time.deltaTime);
         gadgetClock.Update(Time.deltaTime);
-        Debug.Log(gadgetClock.Time);
 
         // Fire primary while input is held
         if (isPrimaryActive)

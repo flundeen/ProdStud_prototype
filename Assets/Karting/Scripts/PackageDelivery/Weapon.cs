@@ -74,7 +74,7 @@ public class Weapon : MonoBehaviour
 
     virtual public void OnPrimary(InputValue val)
     {
-        isPrimaryActive = val.Get<float>() > 0;
+        isPrimaryActive = val.Get<float>() > 0.5;
     }
 
     // For AI use
