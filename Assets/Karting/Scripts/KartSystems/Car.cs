@@ -18,16 +18,18 @@ namespace KartGame.KartSystems
             public float MaxTime;
             public Action callback;
 
-            public StatPowerup()
-            {
-
-            }
+            public StatPowerup() { }
 
             public StatPowerup(ArcadeKart.Stats modifiers, string id, float maxTime)
             {
                 this.modifiers = modifiers;
                 this.PowerUpID = id;
                 this.MaxTime = maxTime;
+            }
+
+            public void Reset()
+            {
+                ElapsedTime = 0;
             }
         }
 

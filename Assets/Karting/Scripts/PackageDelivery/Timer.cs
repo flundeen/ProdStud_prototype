@@ -11,6 +11,8 @@ public class Timer
     // Properties
     public bool IsReady
     { get { return currTime <= 0; } }
+    public float Time 
+    { get { return currTime; } }
 
     // Constructor
     public Timer(float length, bool startAtZero = true)

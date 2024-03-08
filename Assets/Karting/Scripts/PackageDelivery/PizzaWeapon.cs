@@ -35,6 +35,7 @@ public class PizzaWeapon : Weapon
         // Update weapon cooldowns
         primaryClock.Update(Time.deltaTime);
         gadgetClock.Update(Time.deltaTime);
+        Debug.Log(gadgetClock.Time);
 
         // Fire primary while input is held
         if (isPrimaryActive)
@@ -66,6 +67,7 @@ public class PizzaWeapon : Weapon
         if (gadgetClock.IsReady)
         {
             isBoostActive = true;
+            speedBoost.Reset(); // resets elapsed time
             car.AddPowerup(speedBoost);
             gadgetClock.Start();
         }
