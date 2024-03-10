@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
     public int id;
     [NonSerialized]
     public bool isAlive;
+    [NonSerialized]
+    public Transform spawnPoint;
 
     // Properties
     public Vector3 Position { get { return car.transform.position; } }
@@ -43,6 +45,7 @@ public class Player : MonoBehaviour
 
         // Car initialization
         car.AssignOwner(this);
+        car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         // Hook car death to player death event
         car.deathCallback += (int attackerId) =>
         {
@@ -72,11 +75,12 @@ public class Player : MonoBehaviour
         car.SendInputs(inputs);
     }
 
-    public void Respawn(Vector3 pos, Quaternion rot)
+    public void Respawn(Transform spawn)
     {
         // Reset player data
         isAlive = true;
-        car.transform.SetPositionAndRotation(pos, rot);
+        spawnPoint = spawn;
+        car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         car.ResetCar();
         weapon.ResetWeapons();
         weapon.enabled = true;

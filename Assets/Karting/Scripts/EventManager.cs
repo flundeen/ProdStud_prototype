@@ -72,8 +72,7 @@ public class EventManager : MonoBehaviour
     void OnPlayerJoined(PlayerInput pInput)
     {
         // Move new player to spawn point
-        Transform spawnPoint = GetSpawnPoint();
-        pInput.transform.GetChild(0).GetComponent<ArcadeKart>().transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        pInput.GetComponent<Player>().spawnPoint = GetSpawnPoint();
 
         // Swaps next player to other vehicle
         PlayerInputManager.instance.playerPrefab = playerPrefabs[(Player.players.Count + 1) % 2];
@@ -115,7 +114,7 @@ public class EventManager : MonoBehaviour
         Transform spawnPoint = GetSpawnPoint();
 
         // respawn player at selected point
-        GameManager.Instance.players[playerId].Respawn(spawnPoint.position, spawnPoint.rotation);
+        GameManager.Instance.players[playerId].Respawn(spawnPoint);
     }
 
     public void ToggleMenu()
