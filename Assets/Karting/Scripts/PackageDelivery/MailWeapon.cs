@@ -12,6 +12,9 @@ public class MailWeapon : Weapon
     private List<Bullet_Script> dronePool;
     private float primaryCharge; // Float between 0-1, 1 being fully charged
 
+    const float MX_LOB_DIS = 20f;
+    const float MN_LOB_DIS = 5f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +37,7 @@ public class MailWeapon : Weapon
         if (isPrimaryActive)
         {
             // Charge primary for up to 0.5s
-            primaryCharge = Mathf.Min(primaryCharge + Time.deltaTime * 2, 1);
+            primaryCharge = Mathf.Min(primaryCharge + Time.deltaTime * 2, 5);
         }
         else
         {
@@ -144,7 +147,7 @@ public class MailWeapon : Weapon
         }
 
         // Set range using primaryCharge
-        int speed = (int)Mathf.Round(Mathf.Lerp(2f, 15f, primaryCharge)); // Min-max ranges
+        int speed = (int)Mathf.Round(Mathf.Lerp(MN_LOB_DIS, MX_LOB_DIS, primaryCharge)); // Min-max ranges
 
         bullet.Shoot(new AttackInfo(playerId, AttackType.Lob, primaryDamage, speed), position, aimAngle);
     }

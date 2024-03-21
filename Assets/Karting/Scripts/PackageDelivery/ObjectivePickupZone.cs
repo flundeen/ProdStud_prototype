@@ -10,7 +10,7 @@ public class ObjectivePickupZone : MonoBehaviour
     [SerializeField]
     private Material packageMaterial;
     [SerializeField]
-    private GameObject sphere;
+    private GameObject package;
     [SerializeField]
     private GameObject plane;
     private Material planeMat;
@@ -67,7 +67,7 @@ public class ObjectivePickupZone : MonoBehaviour
                 players[0].GetComponentInParent<KartPackage>().hasPackage = true;
                 GameManager.Instance.packagePickedUp = true;
                 planeMat.color = inactiveColor;
-                sphere.GetComponent<Renderer>().enabled = false;
+                package.GetComponent<Renderer>().enabled = false;
                 hasPackage = false;
                 Debug.Log("Package has been picked up");
 
@@ -132,7 +132,7 @@ public class ObjectivePickupZone : MonoBehaviour
         {
             hasPackage = true;
             GameManager.Instance.packageIsPresent = true;
-            sphere.GetComponent<Renderer>().enabled = true;
+            package.GetComponent<Renderer>().enabled = true;
             planeMat.color = waitingColor;
         }
     }
