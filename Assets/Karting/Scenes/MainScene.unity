@@ -750,6 +750,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1532840402}
   m_SourcePrefab: {fileID: 100100000, guid: 8d6ad55b2b6cd2d41b2c74fcd71ac278, type: 3}
+--- !u!1 &109916843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 41683273570002996, guid: 0db1aa20fc33412448ba038a97eb34ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 2114033791}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &110641468 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8d6ad55b2b6cd2d41b2c74fcd71ac278,
@@ -1854,6 +1860,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1750167980}
     m_Modifications:
+    - target: {fileID: -8092811022464545367, guid: 0db1aa20fc33412448ba038a97eb34ae,
+        type: 3}
+      propertyPath: package
+      value: 
+      objectReference: {fileID: 1596329650}
     - target: {fileID: 4718198361178431804, guid: 0db1aa20fc33412448ba038a97eb34ae,
         type: 3}
       propertyPath: m_Size.x
@@ -2520,6 +2531,12 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 3897555824f4f0244bfd53979a17dce7, type: 3}
+--- !u!1 &337215835 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 41683273570002996, guid: 0db1aa20fc33412448ba038a97eb34ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 1928899278}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &340094937
 GameObject:
   m_ObjectHideFlags: 0
@@ -11656,6 +11673,12 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 8d6ad55b2b6cd2d41b2c74fcd71ac278, type: 3}
+--- !u!1 &1596329650 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 41683273570002996, guid: 0db1aa20fc33412448ba038a97eb34ae,
+    type: 3}
+  m_PrefabInstance: {fileID: 252910696}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1605926063
 GameObject:
   m_ObjectHideFlags: 0
@@ -14487,6 +14510,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 366372510}
     m_Modifications:
+    - target: {fileID: -8092811022464545367, guid: 0db1aa20fc33412448ba038a97eb34ae,
+        type: 3}
+      propertyPath: package
+      value: 
+      objectReference: {fileID: 337215835}
     - target: {fileID: 4718198361178431804, guid: 0db1aa20fc33412448ba038a97eb34ae,
         type: 3}
       propertyPath: m_Size.x
@@ -16576,6 +16604,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 856014047}
     m_Modifications:
+    - target: {fileID: -8092811022464545367, guid: 0db1aa20fc33412448ba038a97eb34ae,
+        type: 3}
+      propertyPath: package
+      value: 
+      objectReference: {fileID: 109916843}
     - target: {fileID: 4718198361178431804, guid: 0db1aa20fc33412448ba038a97eb34ae,
         type: 3}
       propertyPath: m_Size.x
