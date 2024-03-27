@@ -109,6 +109,7 @@ public class Bullet_Script : MonoBehaviour
                     rbody.useGravity = false;
                     rbody.velocity = UnityEngine.Vector3.zero;
                     transform.localScale = UnityEngine.Vector3.one * 10; // Blast radius
+                    lifeTime = ElapsedTime + 0.5f; // Explosion lasts for 0.5s
 
                     // Play impact audio on explosion
                     if (audioSrc != null && impactSFX != null)
@@ -143,7 +144,7 @@ public class Bullet_Script : MonoBehaviour
 
             case AttackType.Lob:
                 rbody.useGravity = true; // Creates arc trajectory
-                lifeTime = 2; // Need a better method for ending lob, lob lifetime is arc time + explosion time
+                lifeTime = 1000; // Need a better method for ending lob, lob lifetime is arc time + explosion time
                 rbody.AddForce(Mathf.Sin(direction) * speed, 5, Mathf.Cos(direction) * speed, ForceMode.Impulse);
                 break;
 

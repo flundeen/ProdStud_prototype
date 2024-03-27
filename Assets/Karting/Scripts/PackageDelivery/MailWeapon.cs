@@ -143,7 +143,7 @@ public class MailWeapon : Weapon
         if (bullet == null)
         {
             GenerateBullets(1, lobPrefab, lobPool);
-            bullet = lobPool[^1]; // This is simplified from (bulletPool.Count - 1)??? if it works it works ig
+            bullet = lobPool[^1]; // This is simplified from (pool.Count - 1)
         }
 
         // Set range using primaryCharge
