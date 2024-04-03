@@ -100,6 +100,10 @@ public class ObjectivePickupZone : MonoBehaviour
             if (audioSrc != null && loadingSFX != null && pickupSFXdelay <= 0)
                 audioSrc.Stop();
         }
+        if (!hasPackage)
+        {
+            package.GetComponent<Renderer>().enabled = false;
+        }
     }
 
     private void OnTriggerEnter(Collider collision)

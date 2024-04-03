@@ -409,7 +409,10 @@ namespace KartGame.KartSystems
             // Update package logic
             if (kartPkg.hasPackage)
             {
-                package.GetComponent<Renderer>().enabled = true;
+                if (baseStats.Health > 0)
+                {
+                    package.GetComponent<Renderer>().enabled = true;
+                }
                 float lastTime = packageTimer;
                 packageTimer -= Time.fixedDeltaTime;
 
@@ -477,7 +480,7 @@ namespace KartGame.KartSystems
             {
                 Instantiate(droppedPackage, kartVisual.transform.position, kartVisual.transform.rotation);
                 GameManager.Instance.packagePickedUp = false;
-                kartPkg.hasPackage = false;
+                package.GetComponent<Renderer>().enabled = false;
             }
 
             // Death SFX
