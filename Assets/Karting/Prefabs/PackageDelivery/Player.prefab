@@ -81,8 +81,7 @@ MonoBehaviour:
   camera: {fileID: 7406388781123673574}
   car: {fileID: 1674142606626507770}
   weapon: {fileID: 0}
-  id: 0
-  isAlive: 0
+  honkSFX: {fileID: 0}
 --- !u!114 &217996450180499412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,7 +108,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
+  m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Kart
   m_SplitScreenIndex: -1

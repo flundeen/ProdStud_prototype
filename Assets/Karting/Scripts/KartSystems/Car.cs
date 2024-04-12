@@ -6,6 +6,11 @@ using UnityEngine.InputSystem;
 
 namespace KartGame.KartSystems
 {
+    public enum CarType
+    {
+        Pizza,
+        Mail
+    }
 
     public class ArcadeKart : MonoBehaviour
     {
@@ -245,6 +250,7 @@ namespace KartGame.KartSystems
         public AudioClip damagedSFX;
         public AudioClip deathSFX;
         public AudioClip pkgTimerSFX;
+        public AudioClip honkSFX;
 
         // Event fields
         public Action<int> deathCallback;
@@ -443,6 +449,11 @@ namespace KartGame.KartSystems
         {
             Input = inputs;
             WantsToDrift = Input.Braking > 0 && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
+        }
+        void OnHonk()
+        {
+            if (audioSrc != null && honkSFX != null)
+                audioSrc.PlayOneShot(honkSFX);
         }
 
         public bool TakeDamage(AttackInfo info)

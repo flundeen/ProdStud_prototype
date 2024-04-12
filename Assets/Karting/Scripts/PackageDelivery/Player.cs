@@ -12,16 +12,16 @@ public class Player : MonoBehaviour
     public ArcadeKart car;
     public Weapon weapon;
 
+    // Selection Menu Data
+    public CarType carType;
+    public bool isSelectionConfirmed = false;
+
     // Input Fields
     private InputData inputs;
     private float accelVal = 0;
     private float brakeVal = 0;
     private float turnVal = 0;
     private Vector2 cameraOffset = Vector2.zero;
-
-    // Audio
-    private AudioSource audioSrc;
-    public AudioClip honkSFX;
 
     // Fields
     public static List<Player> players = new List<Player>();
@@ -63,8 +63,6 @@ public class Player : MonoBehaviour
 
         // Weapon initialization
         if (weapon != null) weapon.Initialize(id, car);
-
-        audioSrc = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -119,9 +117,28 @@ public class Player : MonoBehaviour
         EventManager.Instance.ToggleMenu();
     }
 
-    void OnHonk()
+    void OnSwitch(InputValue val)
     {
-        if (audioSrc != null && honkSFX != null)
-            audioSrc.PlayOneShot(honkSFX);
+        if (isSelectionConfirmed) return;
+
+        if (val.Get<float>() < 0)
+        {
+            if (carType == CarType.Pizza)
+                carType = CarType.Mail;
+            else
+                carType--;
+        }
+        else
+        {
+            if (carType == CarType.Mail)
+                carType = CarType.Pizza;
+            else
+                carType++;
+        }
+    }
+
+    void OnSelect()
+    {
+        isSelectionConfirmed = !isSelectionConfirmed;
     }
 }

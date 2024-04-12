@@ -478,6 +478,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 58157337}
   m_CullTransparentMesh: 1
+--- !u!1 &59493122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 59493123}
+  m_Layer: 0
+  m_Name: SelectionDisplays
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &59493123
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59493122}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1768029850}
+  - {fileID: 100250409}
+  - {fileID: 582648549}
+  - {fileID: 63853166}
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &63853165
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +537,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 63853165}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8, y: 95, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -510,8 +545,8 @@ Transform:
   - {fileID: 1636947829}
   - {fileID: 1879089030}
   - {fileID: 1382599283}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 59493123}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &63853167
 MonoBehaviour:
@@ -525,6 +560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7e0cee698de744891ed12f5844caaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   choice: 0
   carName: {fileID: 1872655895}
   health_val: {fileID: 1911306715}
@@ -534,7 +570,6 @@ MonoBehaviour:
   weight_val: {fileID: 1835881617}
   PizzaCar: {fileID: 1879089029}
   MailTruck: {fileID: 1636947828}
-  Spin_Speed: 0.2
 --- !u!1 &97914340
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,7 +729,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100250408}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 8, y: 115, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -702,8 +737,8 @@ Transform:
   - {fileID: 1038925123}
   - {fileID: 400554625}
   - {fileID: 1482779596}
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_Father: {fileID: 59493123}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &100250410
 MonoBehaviour:
@@ -717,6 +752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7e0cee698de744891ed12f5844caaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   choice: 0
   carName: {fileID: 600426663}
   health_val: {fileID: 124492897}
@@ -726,7 +762,6 @@ MonoBehaviour:
   weight_val: {fileID: 584900310}
   PizzaCar: {fileID: 1038925121}
   MailTruck: {fileID: 400554624}
-  Spin_Speed: 0.2
 --- !u!1001 &109247357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1352,6 +1387,96 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139898517}
   m_CullTransparentMesh: 1
+--- !u!1 &169145967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 169145969}
+  - component: {fileID: 169145968}
+  - component: {fileID: 169145970}
+  m_Layer: 0
+  m_Name: PlayerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &169145968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169145967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NotificationBehavior: 0
+  m_MaxPlayerCount: 4
+  m_AllowJoining: 1
+  m_JoinBehavior: 0
+  m_PlayerJoinedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_PlayerLeftEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_JoinAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: 
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_PlayerPrefab: {fileID: 4288509399601336885, guid: fef1c7eb791c2b446a76ac219453d8eb,
+    type: 3}
+  m_SplitScreen: 0
+  m_MaintainAspectRatioInSplitScreen: 0
+  m_FixedNumberOfSplitScreens: -1
+  m_SplitScreenRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!4 &169145969
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169145967}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &169145970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169145967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85bf5715d1ee0b04a90ab340ee45758e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &192466941
 GameObject:
   m_ObjectHideFlags: 0
@@ -1784,7 +1909,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &275982042
 MonoBehaviour:
@@ -2927,7 +3052,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582648548}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -22, y: 95, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2935,8 +3060,8 @@ Transform:
   - {fileID: 1173865225}
   - {fileID: 1911678501}
   - {fileID: 124687841}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 59493123}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &582648550
 MonoBehaviour:
@@ -2950,6 +3075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7e0cee698de744891ed12f5844caaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   choice: 0
   carName: {fileID: 1365738891}
   health_val: {fileID: 1168397952}
@@ -2959,7 +3085,6 @@ MonoBehaviour:
   weight_val: {fileID: 863807852}
   PizzaCar: {fileID: 1173865223}
   MailTruck: {fileID: 1911678500}
-  Spin_Speed: 0.2
 --- !u!1 &584900310
 GameObject:
   m_ObjectHideFlags: 0
@@ -5476,7 +5601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1197338280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5506,7 +5631,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1198195890 stripped
 GameObject:
@@ -7298,7 +7423,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1768029849}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -22, y: 115, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7306,8 +7431,8 @@ Transform:
   - {fileID: 1820056895}
   - {fileID: 1198195891}
   - {fileID: 18424493}
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_Father: {fileID: 59493123}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1768029851
 MonoBehaviour:
@@ -7321,6 +7446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e7e0cee698de744891ed12f5844caaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   choice: 0
   carName: {fileID: 1698907934}
   health_val: {fileID: 251059693}
@@ -7330,7 +7456,6 @@ MonoBehaviour:
   weight_val: {fileID: 1196497493}
   PizzaCar: {fileID: 1198195890}
   MailTruck: {fileID: 1820056893}
-  Spin_Speed: 0.2
 --- !u!1 &1820056893 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f57c716d9cb073e4faf570cb01f4dd70,
