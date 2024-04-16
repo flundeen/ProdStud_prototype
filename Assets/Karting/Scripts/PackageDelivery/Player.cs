@@ -65,6 +65,32 @@ public class Player : MonoBehaviour
         if (weapon != null) weapon.Initialize(id, car);
     }
 
+    public void InitCar(ArcadeKart car)
+    {
+        // Car initialization
+        car.AssignOwner(this);
+        car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+
+        // Hook car death to player death event
+        car.deathCallback += (int attackerId) =>
+        {
+            // Disable weapons
+            weapon.enabled = false;
+
+            // Alert EventManager of player death
+            EventManager.Instance.PlayerDeath(this, new ScoreEventArgs
+            {
+                scoreEvent = (car.HasPackage ? ScoreEvent.CarrierKill : ScoreEvent.Kill),
+                scorerId = attackerId,
+                deadPlayerId = id
+            });
+        };
+
+        // Weapon initialization
+        weapon = car.GetComponent<Weapon>();
+        weapon.Initialize(id, car);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -76,12 +102,12 @@ public class Player : MonoBehaviour
     public void Respawn(Transform spawn)
     {
         // Reset player data
-        isAlive = true;
         spawnPoint = spawn;
         car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         car.ResetCar();
         weapon.ResetWeapons();
         weapon.enabled = true;
+        isAlive = true;
     }
 
     void GatherInputs()
