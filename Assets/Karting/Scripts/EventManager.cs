@@ -17,11 +17,8 @@ public class EventManager : MonoBehaviour
     // Fields
     [SerializeField]
     private InGameMenuManager gameMenuManager;
-    [SerializeField]
-    private List<GameObject> playerPrefabs;
-
-    // Fields
     public GameObject spawnPointTree;
+    private List<Player> players;
     private List<Transform> recentSpawnPoints = new List<Transform>();
     // LATER: Set length when player count is determined
     private Timer[] respawnTimers = new Timer[4];
@@ -38,7 +35,7 @@ public class EventManager : MonoBehaviour
         for (int i = 0; i < respawnTimers.Length; i++)
             respawnTimers[i] = new Timer(3, false);
 
-        PlayerInputManager.instance.playerPrefab = playerPrefabs[0];
+        players = PlayerManager.Instance.Players;
     }
 
     // Start is called before the first frame update
@@ -50,8 +47,6 @@ public class EventManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        List<Player> players = GameManager.Instance.players;
-
         // if respawn timer ends, select spawn point for respawning player
         for (int i = 0; i < players.Count; i++)
         {
@@ -69,19 +64,10 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    void OnPlayerJoined(PlayerInput pInput)
-    {
-        // Move new player to spawn point
-        pInput.GetComponent<Player>().spawnPoint = GetSpawnPoint();
-
-        // Swaps next player to other vehicle
-        PlayerInputManager.instance.playerPrefab = playerPrefabs[(Player.players.Count + 1) % 2];
-    }
-
     public void PlayerDeath(object sender, ScoreEventArgs e)
     {
         // start respawn timer for dead player
-        GameManager.Instance.players[e.deadPlayerId].isAlive = false;
+        players[e.deadPlayerId].isAlive = false;
         respawnTimers[e.deadPlayerId].Start();
 
         // award points to attacker
@@ -114,7 +100,7 @@ public class EventManager : MonoBehaviour
         Transform spawnPoint = GetSpawnPoint();
 
         // respawn player at selected point
-        GameManager.Instance.players[playerId].Respawn(spawnPoint);
+        players[playerId].Respawn(spawnPoint);
     }
 
     public void ToggleMenu()

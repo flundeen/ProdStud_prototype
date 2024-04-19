@@ -13,6 +13,11 @@ public class PlayerManager : MonoBehaviour
     private PlayerInputManager inputManager;
     private const string SELECTION_SCENE_NAME = "Selection_Screen";
     private const string GAME_SCENE_NAME = "Game";
+    private bool isGameLoading = false;
+
+    // Static Fields
+    public static PlayerManager Instance { get; private set; }
+    public List<Player> Players { get; private set; }
 
     // Selection Fields
     private GameObject selectionDisplayParent;
@@ -23,12 +28,20 @@ public class PlayerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Ensures that only one instance exists
+        if (Instance != null && Instance != this)
+            Destroy(this);
+        else
+            Instance = this;
+        
+        if (Players == null) Players = new List<Player>();
+
         // This object carries player data between scenes
         DontDestroyOnLoad(gameObject);
 
         sceneName = SceneManager.GetActiveScene().name;
         inputManager = GetComponent<PlayerInputManager>();
-
+        
         // Initialize player data based on scene
         if (sceneName == SELECTION_SCENE_NAME)
             InitSelection();
@@ -67,7 +80,6 @@ public class PlayerManager : MonoBehaviour
 
     void InitGame()
     {
-        inputManager.splitScreen = true;
         inputManager.DisableJoining();
 
         // Load player data
@@ -103,14 +115,15 @@ public class PlayerManager : MonoBehaviour
         }
 
         // Init/start game
+        inputManager.splitScreen = true;
+        GameManager.Instance.StartGame();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // If Selection:
-        // Add/Remove players on load/disconnect
-        // Load game when every selectionDisplay.IsReady = true
+        sceneName = SceneManager.GetActiveScene().name;
+
         switch (sceneName)
         {
             case SELECTION_SCENE_NAME:
@@ -125,9 +138,12 @@ public class PlayerManager : MonoBehaviour
                 }
 
                 // Load game when players are ready (ensure there are players)
-                if (allReady && inputManager.playerCount > 0)
+                if (allReady && inputManager.playerCount > 0 && !isGameLoading)
                 {
                     // Load game scene
+                    isGameLoading = true;
+                    SceneManager.LoadSceneAsync("Game");
+                    InitGame();
                 }
                 break;
 
@@ -141,6 +157,9 @@ public class PlayerManager : MonoBehaviour
 
     void OnPlayerJoined(PlayerInput pInput)
     {
+        // Add Player component to static list
+        Players.Add(pInput.GetComponent<Player>());
+
         // Add as child to prevent destruction across scenes
         pInput.transform.SetParent(transform);
 
@@ -151,6 +170,9 @@ public class PlayerManager : MonoBehaviour
 
     void OnPlayerLeft(PlayerInput pInput)
     {
+        // Remove Player component from list
+        Players.Remove(pInput.GetComponent<Player>());
+
         // Remove leaving player from selection display
         // Shift players so empty selection display is after players
         Player p = null;

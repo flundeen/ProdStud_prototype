@@ -5,7 +5,6 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.UI;
 
 public class Selection_Display : MonoBehaviour
@@ -100,6 +99,10 @@ public class Selection_Display : MonoBehaviour
             }
         }
 
-        DisplayCar.transform.Rotate(new Vector3(0, 1, 0), spinSpeed);
+        // Rotate while car is unselected
+        if (IsReady)
+            DisplayCar.transform.rotation = Quaternion.identity;
+        else
+            DisplayCar.transform.Rotate(new Vector3(0, 1, 0), spinSpeed);
     }
 }

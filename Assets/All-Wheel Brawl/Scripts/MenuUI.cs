@@ -20,6 +20,6 @@ public class MenuUI : MonoBehaviour
     public void OnStartBtnClick()
     {
         Debug.Log("Starting Game!");
-        SceneManager.LoadSceneAsync(1); // Assumes Title = 0, Select Screen = 1, Game = 2
+        SceneManager.LoadSceneAsync("Selection_Screen");
     }
 }

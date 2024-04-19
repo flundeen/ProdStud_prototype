@@ -61,7 +61,7 @@ public class ObjectiveDropoff : MonoBehaviour
             GameManager.Instance.packagePickedUp = false;
             scored = true;
 
-            GameManager.Instance.AwardPoints(collision.GetComponentInParent<Player>().id, ScoreEvent.Delivery);
+            GameManager.Instance.AwardPoints(collision.GetComponentInParent<Player>().ID, ScoreEvent.Delivery);
 
             if (audioSrc != null && dropoffSFX != null)
                 audioSrc.PlayOneShot(dropoffSFX);

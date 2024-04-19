@@ -100,9 +100,9 @@ public class MailWeapon : Weapon
             // Search for closest player
             Player target = null;
             float currDist = 0;
-            foreach (Player p in GameManager.Instance.players)
+            foreach (Player p in PlayerManager.Instance.Players)
             {
-                if (p.id == playerId) continue;
+                if (p.ID == playerId) continue;
 
                 float dist = Vector3.Distance(car.transform.position, p.Position);
 
@@ -115,7 +115,7 @@ public class MailWeapon : Weapon
 
             // Activate bullet with set target (if found)
             if (target != null)
-                bullet.Shoot(new AttackInfo(playerId, AttackType.Homing, 20, 20, target.id), position, aimAngle);
+                bullet.Shoot(new AttackInfo(playerId, AttackType.Homing, 20, 20, target.ID), position, aimAngle);
             else
                 bullet.Shoot(new AttackInfo(playerId, AttackType.Homing, 20, 20, -1), position, aimAngle);
         }

@@ -55,7 +55,7 @@ public class Bullet_Script : MonoBehaviour
             case AttackType.Homing:
                 if (attackInfo.targetId > -1)
                 {
-                    Player target = GameManager.Instance.players[attackInfo.targetId];
+                    Player target = PlayerManager.Instance.Players[attackInfo.targetId];
 
                     // Steer towards target, excluding Y axis
                     UnityEngine.Vector2 desVel = new (transform.position.x - target.Position.x, transform.position.z - target.Position.z);

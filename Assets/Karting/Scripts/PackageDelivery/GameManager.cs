@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     public float gameTime = 0;
     public bool packageIsPresent = false;
     public bool packagePickedUp = false;
-    public List<Player> players = new List<Player>();
     public int[] scores = new int[4];
     public List<ObjectivePickupZone> objPickupZones = new List<ObjectivePickupZone>();
     public List<ObjectiveDropoff> objDropoffZones = new List<ObjectiveDropoff>();
@@ -39,10 +38,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Gather players and set ids
-        players = Player.players;
 
-        StartGame();
     }
 
     // Update is called once per frame
@@ -90,6 +86,7 @@ public class GameManager : MonoBehaviour
         if (id < 0 || id > scores.Length)
         {
             Debug.Log("ERROR: invalid id for awarding points");
+            return;
         }
 
         // Enum value determines points awarded (see Player.cs)

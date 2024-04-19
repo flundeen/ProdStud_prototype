@@ -1345,6 +1345,11 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 4895846115232909977, guid: cba6236a3ca88a54081cc989c4f0c08a,
         type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 7754739120620624299}
+    - target: {fileID: 4895846115232909977, guid: cba6236a3ca88a54081cc989c4f0c08a,
+        type: 3}
       propertyPath: honkSFX
       value: 
       objectReference: {fileID: 8300000, guid: 3d1de2dfeddb7cd4094de9bd824d4bb5, type: 3}

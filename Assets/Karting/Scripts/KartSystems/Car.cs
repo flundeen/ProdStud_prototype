@@ -118,7 +118,7 @@ namespace KartGame.KartSystems
             }
         }
 
-
+        public Camera camera;
         public GameObject kartVisual;
         public Rigidbody Rigidbody { get; private set; }
         public InputData Input { get; private set; }
@@ -141,7 +141,7 @@ namespace KartGame.KartSystems
                 ReverseSpeed = 5f,
                 CoastingDrag = 4f,
                 Grip = .95f,
-                AddedGravity = 1f,
+                AddedGravity = 1f
             }
         };
 
@@ -235,6 +235,11 @@ namespace KartGame.KartSystems
         bool m_HasCollision;
         bool m_InAir = false;
 
+        // Input Fields
+        private float accelVal = 0;
+        private float brakeVal = 0;
+        private float turnVal = 0;
+
         private int playerId = -1;
 
         //Package variables
@@ -307,8 +312,20 @@ namespace KartGame.KartSystems
 
         void Awake()
         {
-            baseStats.Health = baseStats.MaxHealth;
             Rigidbody = GetComponent<Rigidbody>();
+
+            // Use stats from inspector window to set remaining stats
+            baseStats.Health = baseStats.MaxHealth;
+            baseStats.subStats = new Stats.SubStats
+            {
+                AccelerationCurve = 4f,
+                Braking = 10f,
+                ReverseAcceleration = baseStats.Acceleration,
+                ReverseSpeed = baseStats.TopSpeed,
+                CoastingDrag = 4f,
+                Grip = .95f,
+                AddedGravity = 1f
+            };
 
             UpdateSuspensionParams(FrontLeftWheel);
             UpdateSuspensionParams(FrontRightWheel);
@@ -337,7 +354,6 @@ namespace KartGame.KartSystems
                 }
             }
 
-            transform.parent?.GetComponent<Player>(); // Is this supposed to do anything??
             kartPkg = GetComponent<KartPackage>();
             audioSrc = GetComponent<AudioSource>();
         }
@@ -360,7 +376,7 @@ namespace KartGame.KartSystems
 
         public void AssignOwner(Player p)
         {
-            playerId = p.id;
+            playerId = p.ID;
         }
 
         void FixedUpdate()
@@ -402,10 +418,7 @@ namespace KartGame.KartSystems
             AirPercent = 1 - GroundPercent;
 
             // apply vehicle physics
-            if (m_CanMove)
-            {
-                MoveVehicle(Input.Acceleration, Input.Braking, Input.Turning);
-            }
+            if (m_CanMove) MoveVehicle();
             GroundAirbourne();
 
             m_PreviousGroundPercent = GroundPercent;
@@ -593,9 +606,9 @@ namespace KartGame.KartSystems
             }
         }
 
-        void MoveVehicle(float acceleration, float braking, float turning)
+        void MoveVehicle()
         {
-            float accelInput = acceleration - braking;
+            float accelInput = accelVal - brakeVal;
 
             // manual acceleration curve coefficient scalar
             float accelerationCurveCoeff = 5;
@@ -613,7 +626,7 @@ namespace KartGame.KartSystems
             float multipliedAccelerationCurve = m_FinalStats.subStats.AccelerationCurve * accelerationCurveCoeff;
             float accelRamp = Mathf.Lerp(multipliedAccelerationCurve, 1, accelRampT * accelRampT);
 
-            bool isBraking = (localVelDirectionIsFwd && braking > 0) || (!localVelDirectionIsFwd && acceleration > 0);
+            bool isBraking = (localVelDirectionIsFwd && brakeVal > 0) || (!localVelDirectionIsFwd && accelVal > 0);
 
             // if we are braking (moving reverse to where we are going)
             // use the braking accleration instead
@@ -622,7 +635,7 @@ namespace KartGame.KartSystems
             float finalAcceleration = finalAccelPower * accelRamp;
 
             // apply inputs to forward/backward
-            float turningPower = IsDrifting ? m_DriftTurningPower : turning * m_FinalStats.Steer;
+            float turningPower = IsDrifting ? m_DriftTurningPower : turnVal * m_FinalStats.Steer;
 
             Quaternion turnAngle = Quaternion.AngleAxis(turningPower, transform.up);
             Vector3 fwd = turnAngle * transform.forward;
@@ -653,6 +666,7 @@ namespace KartGame.KartSystems
             Rigidbody.velocity = newVelocity;
 
             // Drift
+            WantsToDrift = brakeVal > 0 && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
             if (GroundPercent > 0.0f)
             {
                 if (m_InAir)
@@ -708,13 +722,13 @@ namespace KartGame.KartSystems
 
                 if (IsDrifting)
                 {
-                    float turnInputAbs = Mathf.Abs(turning);
+                    float turnInputAbs = Mathf.Abs(turnVal);
                     if (turnInputAbs < k_NullInput)
                         m_DriftTurningPower = Mathf.MoveTowards(m_DriftTurningPower, 0.0f, Mathf.Clamp01(DriftDampening * Time.fixedDeltaTime));
 
                     // Update the turning power based on input
                     float driftMaxSteerValue = m_FinalStats.Steer + DriftAdditionalSteer;
-                    m_DriftTurningPower = Mathf.Clamp(m_DriftTurningPower + (turning * Mathf.Clamp01(DriftControl * Time.fixedDeltaTime)), -driftMaxSteerValue, driftMaxSteerValue);
+                    m_DriftTurningPower = Mathf.Clamp(m_DriftTurningPower + (turnVal * Mathf.Clamp01(DriftControl * Time.fixedDeltaTime)), -driftMaxSteerValue, driftMaxSteerValue);
 
                     bool facingVelocity = Vector3.Dot(Rigidbody.velocity.normalized, transform.forward * Mathf.Sign(accelInput)) > Mathf.Cos(MinAngleToFinishDrift * Mathf.Deg2Rad);
 
@@ -775,6 +789,19 @@ namespace KartGame.KartSystems
             }
 
             ActivateDriftVFX(IsDrifting && GroundPercent > 0.0f);
+        }
+
+        void OnAccelerate(InputValue val)
+        {
+            accelVal = val.Get<float>();
+        }
+        void OnBrake(InputValue val)
+        {
+            brakeVal = val.Get<float>();
+        }
+        void OnTurn(InputValue val)
+        {
+            turnVal = val.Get<float>();
         }
     }
 }

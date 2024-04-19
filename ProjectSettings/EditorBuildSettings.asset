@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Karting/Scenes/IntroMenu.unity
     guid: d29260d8d84c94bd7ac95807b3da99d4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Karting/Scenes/MainScene.unity
     guid: 92786e23da2af4a4f8803aaf44c47121
   - enabled: 0
@@ -17,4 +17,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Karting/Scenes/WinScene.unity
     guid: d6801f2e59f75ee4b919cf5da4e48e3b
+  - enabled: 0
+    path: Assets/All-Wheel Brawl/Scenes/Title_screen.unity
+    guid: 832b30d6c5ab45843ba6ef57bba6cf82
+  - enabled: 1
+    path: Assets/All-Wheel Brawl/Scenes/Selection_Screen.unity
+    guid: 42b7ef8f7c7296d4ab1878885e9dfd8a
+  - enabled: 1
+    path: Assets/All-Wheel Brawl/Scenes/Game.unity
+    guid: 4733c0ab58612274d848b36de58cc64d
   m_configObjects: {}

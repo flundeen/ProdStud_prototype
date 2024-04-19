@@ -8,67 +8,41 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     // Components
-    public Camera camera;
-    public ArcadeKart car;
-    public Weapon weapon;
+    private Camera camera;
+    private ArcadeKart car;
+    private Weapon weapon;
+    private PlayerInput pInput;
 
     // Selection Menu Data
     public CarType carType;
+    [NonSerialized]
     public bool isSelectionConfirmed = false;
 
     // Input Fields
-    private InputData inputs;
-    private float accelVal = 0;
-    private float brakeVal = 0;
-    private float turnVal = 0;
     private Vector2 cameraOffset = Vector2.zero;
 
     // Fields
-    public static List<Player> players = new List<Player>();
     [NonSerialized]
-    public int id;
-    [NonSerialized]
-    public bool isAlive;
+    public bool isAlive = true;
     [NonSerialized]
     public Transform spawnPoint;
 
     // Properties
     public Vector3 Position { get { return car.transform.position; } }
+    public int ID { get { return pInput.playerIndex; } }
 
     // Start is called before the first frame update
     void Start()
     {
-        id = players.Count;
-        players.Add(this);
-
-        isAlive = true;
-
-        // Car initialization
-        car.AssignOwner(this);
-        car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-        // Hook car death to player death event
-        car.deathCallback += (int attackerId) =>
-        {
-            // Disable weapons
-            weapon.enabled = false;
-
-            // Alert EventManager of player death
-            EventManager.Instance.PlayerDeath(this, new ScoreEventArgs
-            {
-                scoreEvent = (car.HasPackage ? ScoreEvent.CarrierKill : ScoreEvent.Kill),
-                scorerId = attackerId,
-                deadPlayerId = id
-            });
-        };
-
-        // Weapon initialization
-        if (weapon != null) weapon.Initialize(id, car);
+        pInput = GetComponent<PlayerInput>();
     }
 
     public void InitCar(ArcadeKart car)
     {
         // Car initialization
         car.AssignOwner(this);
+        camera = car.camera;
+        pInput.camera = camera;
         car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
         // Hook car death to player death event
@@ -82,21 +56,19 @@ public class Player : MonoBehaviour
             {
                 scoreEvent = (car.HasPackage ? ScoreEvent.CarrierKill : ScoreEvent.Kill),
                 scorerId = attackerId,
-                deadPlayerId = id
+                deadPlayerId = ID
             });
         };
 
         // Weapon initialization
         weapon = car.GetComponent<Weapon>();
-        weapon.Initialize(id, car);
+        weapon.Initialize(ID, car);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Input handling
-        GatherInputs();
-        car.SendInputs(inputs);
+
     }
 
     public void Respawn(Transform spawn)
@@ -110,34 +82,13 @@ public class Player : MonoBehaviour
         isAlive = true;
     }
 
-    void GatherInputs()
-    {
-        inputs = new InputData
-        {
-            Acceleration = accelVal,
-            Braking = brakeVal,
-            Turning = turnVal
-        };
-    }
-
-    void OnAccelerate(InputValue val)
-    {
-        accelVal = val.Get<float>();
-    }
-    void OnBrake(InputValue val)
-    {
-        brakeVal = val.Get<float>();
-    }
-    void OnTurn(InputValue val)
-    {
-        turnVal = val.Get<float>();
-    }
     void OnAim(InputValue val)
     {
         cameraOffset = val.Get<Vector2>();
 
         camera.transform.localPosition = new Vector3(cameraOffset.x, 0, cameraOffset.y) * 2;
     }
+
     void OnMenuToggle()
     {
         EventManager.Instance.ToggleMenu();
