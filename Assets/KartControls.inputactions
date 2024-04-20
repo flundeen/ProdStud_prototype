@@ -236,9 +236,9 @@
                 {
                     "name": "",
                     "id": "ca0aa377-d815-466a-aa86-efbbcf06b49d",
-                    "path": "<Mouse>/position",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
-                    "processors": "ScaleVector2(x=0.1,y=0.1)",
+                    "processors": "",
                     "groups": "KBM",
                     "action": "Aim",
                     "isComposite": false,

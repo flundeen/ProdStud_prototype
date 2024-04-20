@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1630650487194974528
 MonoBehaviour:
@@ -45,10 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b312a93d3debfee46b0cec15c064a36c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  car: {fileID: 0}
-  weapon: {fileID: 0}
-  honkSFX: {fileID: 0}
+  carType: 0
 --- !u!114 &4908161657221573831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: f6c662105c98fca4ba3d54378790cd66,
     type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 1
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:

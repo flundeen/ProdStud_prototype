@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
     {
         // Car initialization
         car.AssignOwner(this);
+        this.car = car;
         camera = car.camera;
         pInput.camera = camera;
         car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);

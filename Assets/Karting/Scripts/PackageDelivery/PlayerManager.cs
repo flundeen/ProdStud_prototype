@@ -107,11 +107,11 @@ public class PlayerManager : MonoBehaviour
                     car = Instantiate(carPrefabs[1], player.transform).GetComponent<ArcadeKart>();
                     break;
             }
-            player.InitCar(car);
 
-            // Move cars to spawnpoints
+            // Set player spawnpoints and initialize car
             Transform spawnPoint = EventManager.Instance.GetSpawnPoint();
             player.spawnPoint = spawnPoint;
+            player.InitCar(car);
         }
 
         // Init/start game
@@ -140,10 +140,11 @@ public class PlayerManager : MonoBehaviour
                 // Load game when players are ready (ensure there are players)
                 if (allReady && inputManager.playerCount > 0 && !isGameLoading)
                 {
-                    // Load game scene
+                    // Load game scene, initialize game once scene is loaded
                     isGameLoading = true;
-                    SceneManager.LoadSceneAsync("Game");
-                    InitGame();
+                    SceneManager.LoadSceneAsync("Game").completed += (asyncOperation) => {
+                        InitGame(); 
+                    };
                 }
                 break;
 

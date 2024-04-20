@@ -1,5 +1,7 @@
+using KartGame.KartSystems;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class KillPlane : MonoBehaviour
@@ -13,11 +15,12 @@ public class KillPlane : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // If the player collides
-        if (other.tag == "Player")
+        // If the player's car hitbox collides
+        if (other.CompareTag("Player"))
         {
-            Player deadPlayer = other.gameObject.GetComponent<Player>();
-            deadPlayer.isAlive = false;
+            // Deal lethal damage
+            ArcadeKart playerCar = other.gameObject.GetComponentInParent<ArcadeKart>();
+            playerCar.TakeDamage(new AttackInfo(-1, AttackType.Hazard, 10000, 0));
         }
     }
 }
