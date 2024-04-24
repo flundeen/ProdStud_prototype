@@ -66,6 +66,7 @@ public class ObjectivePickupZone : MonoBehaviour
             {
                 players[0].GetComponentInParent<KartPackage>().hasPackage = true;
                 GameManager.Instance.packagePickedUp = true;
+                GameManager.Instance.packageHolder = players[0].transform;
                 planeMat.color = inactiveColor;
                 package.GetComponent<Renderer>().enabled = false;
                 hasPackage = false;

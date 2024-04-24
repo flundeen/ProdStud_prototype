@@ -497,7 +497,8 @@ namespace KartGame.KartSystems
             // Drop package if carrying one
             if (kartPkg.hasPackage)
             {
-                Instantiate(droppedPackage, kartVisual.transform.position, kartVisual.transform.rotation);
+                GameObject dropped = Instantiate(droppedPackage, kartVisual.transform.position, kartVisual.transform.rotation);
+                GameManager.Instance.packageHolder = dropped.transform;
                 GameManager.Instance.packagePickedUp = false;
                 package.GetComponent<Renderer>().enabled = false;
             }

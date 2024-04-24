@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public bool packageIsPresent = false;
     public bool packagePickedUp = false;
     public int[] scores = new int[4];
+    public Transform packageHolder = null;
     public List<ObjectivePickupZone> objPickupZones = new List<ObjectivePickupZone>();
     public List<ObjectiveDropoff> objDropoffZones = new List<ObjectiveDropoff>();
     public TMP_Text timerText;
@@ -52,7 +53,9 @@ public class GameManager : MonoBehaviour
             // process game state
             if (!packageIsPresent)
             {
-                objPickupZones[Random.Range(0, objPickupZones.Count)].AddPackage();
+                int randomPickupZone = Random.Range(0, objPickupZones.Count);
+                objPickupZones[randomPickupZone].AddPackage();
+                packageHolder = objPickupZones[randomPickupZone].transform;
             }
 
             if (packagePickedUp)

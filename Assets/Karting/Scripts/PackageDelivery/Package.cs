@@ -15,6 +15,7 @@ public class Package : MonoBehaviour
         if (timer <= 0f)
         {
             GameManager.Instance.packageIsPresent = false;
+            GameManager.Instance.packageHolder = null;
             Destroy(gameObject);
         }
     }

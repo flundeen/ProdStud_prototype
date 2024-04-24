@@ -730,6 +730,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8015340754424497441, guid: cba6236a3ca88a54081cc989c4f0c08a,
+        type: 3}
+      propertyPath: kartPackage
+      value: 
+      objectReference: {fileID: 7639451137812235868}
     m_RemovedComponents:
     - {fileID: 4895846115232909976, guid: cba6236a3ca88a54081cc989c4f0c08a, type: 3}
     m_RemovedGameObjects: []

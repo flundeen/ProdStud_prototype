@@ -1705,6 +1705,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4672478847534341871}
+    - targetCorrespondingSourceObject: {fileID: 3916885329045161068, guid: cba6236a3ca88a54081cc989c4f0c08a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8676247675620278942}
   m_SourcePrefab: {fileID: 100100000, guid: cba6236a3ca88a54081cc989c4f0c08a, type: 3}
 --- !u!1 &1904220735315611570 stripped
 GameObject:
@@ -1846,3 +1850,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6457225843210224942}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8054475474617336130 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3916885329045161068, guid: cba6236a3ca88a54081cc989c4f0c08a,
+    type: 3}
+  m_PrefabInstance: {fileID: 6457225843210224942}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8676247675620278942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8054475474617336130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2715beb91a8a75c4fa181949b1f689a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  kartPackage: {fileID: 599691298351806445}
