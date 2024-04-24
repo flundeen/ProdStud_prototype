@@ -1380,6 +1380,12 @@ PrefabInstance:
       objectReference: {fileID: 2549421279026383762}
     - target: {fileID: 4895846115232909977, guid: cba6236a3ca88a54081cc989c4f0c08a,
         type: 3}
+      propertyPath: arrowPrefab
+      value: 
+      objectReference: {fileID: 5492499528952010903, guid: b39362ee8d9efa24d847679304924452,
+        type: 3}
+    - target: {fileID: 4895846115232909977, guid: cba6236a3ca88a54081cc989c4f0c08a,
+        type: 3}
       propertyPath: pkgTimerSFX
       value: 
       objectReference: {fileID: 8300000, guid: ff51892007a4d824e9788cfdcb94443b, type: 3}
@@ -1868,5 +1874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2715beb91a8a75c4fa181949b1f689a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  arrowMat: {fileID: 2100000, guid: 073dd4df650d87949b63bfc36e9a67f1, type: 2}
   target: {fileID: 0}
   kartPackage: {fileID: 599691298351806445}
+  attachedKart: {fileID: 0}

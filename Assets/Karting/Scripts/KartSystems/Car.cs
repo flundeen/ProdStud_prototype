@@ -242,6 +242,9 @@ namespace KartGame.KartSystems
 
         private int playerId = -1;
 
+        [SerializeField]
+        private GameObject arrowPrefab;
+
         //Package variables
         [SerializeField]
         private GameObject package;
@@ -356,6 +359,10 @@ namespace KartGame.KartSystems
 
             kartPkg = GetComponent<KartPackage>();
             audioSrc = GetComponent<AudioSource>();
+
+            GameObject arrow = Instantiate(arrowPrefab);
+            arrow.GetComponent<ArrowRotate>().attachedKart = this.transform;
+            arrow.GetComponent<ArrowRotate>().kartPackage = kartPkg;
         }
 
         void AddTrailToWheel(WheelCollider wheel)

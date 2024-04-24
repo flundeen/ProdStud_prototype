@@ -8,13 +8,14 @@ public class ArrowRotate : MonoBehaviour
     private Material arrowMat;
     public Transform target;
     public KartPackage kartPackage;
+    public Transform attachedKart;
 
     public void Update()
     {
         if (target != null)
         {
             Vector3 directionVector = target.position - transform.position;
-            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(directionVector.y, directionVector.x) * Mathf.Rad2Deg);
+            transform.eulerAngles = new Vector3(0, Mathf.Atan2(directionVector.x, directionVector.z) * Mathf.Rad2Deg, 0);
         }
 
         if (!GameManager.Instance.packageIsPresent)
@@ -39,12 +40,14 @@ public class ArrowRotate : MonoBehaviour
                 arrowMat.color = Color.yellow;
             }
         }
+
+        transform.position = new Vector3(attachedKart.position.x, attachedKart.position.y + 4, attachedKart.position.z);
     }
 
     public Transform GetClosestDropoff()
     {
         ObjectiveDropoff closest = GameManager.Instance.objDropoffZones[0];
-        foreach(ObjectiveDropoff objDropoff in GameManager.Instance.objDropoffZones)
+        foreach (ObjectiveDropoff objDropoff in GameManager.Instance.objDropoffZones)
         {
             if (SquaredDistance(objDropoff.transform.position, transform.position) < SquaredDistance(closest.transform.position, transform.position))
             {

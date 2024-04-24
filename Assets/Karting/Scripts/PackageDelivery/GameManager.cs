@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
             {
                 int randomPickupZone = Random.Range(0, objPickupZones.Count);
                 objPickupZones[randomPickupZone].AddPackage();
-                packageHolder = objPickupZones[randomPickupZone].transform;
+                packageHolder = objPickupZones[randomPickupZone].GetComponentInParent<Transform>();
             }
 
             if (packagePickedUp)
