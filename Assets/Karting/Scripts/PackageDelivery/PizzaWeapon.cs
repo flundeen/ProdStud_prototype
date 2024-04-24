@@ -121,6 +121,6 @@ public class PizzaWeapon : Weapon
         }
 
         //sets this player to the shooter so bullets won't damage them and points are rewarded to shooter
-        bullet.Shoot(new AttackInfo(playerId, AttackType.Shot, primaryDamage, 25), position, aimAngle);
+        bullet.Shoot(new AttackInfo(playerId, AttackType.Shot, primaryDamage, 40), position, aimAngle);
     }
 }

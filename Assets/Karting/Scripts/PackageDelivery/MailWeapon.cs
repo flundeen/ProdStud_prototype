@@ -12,8 +12,8 @@ public class MailWeapon : Weapon
     private List<Bullet_Script> dronePool;
     private float primaryCharge; // Float between 0-1, 1 being fully charged
 
-    const float MX_LOB_DIS = 20f;
-    const float MN_LOB_DIS = 5f;
+    const float MX_LOB_DIS = 15f;
+    const float MN_LOB_DIS = 2f;
 
     // Start is called before the first frame update
     void Start()

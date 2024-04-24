@@ -83,13 +83,6 @@ public class Player : MonoBehaviour
         isAlive = true;
     }
 
-    void OnAim(InputValue val)
-    {
-        cameraOffset = val.Get<Vector2>();
-
-        camera.transform.localPosition = new Vector3(cameraOffset.x, 0, cameraOffset.y) * 2;
-    }
-
     void OnMenuToggle()
     {
         EventManager.Instance.ToggleMenu();
