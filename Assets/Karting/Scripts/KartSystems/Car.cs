@@ -239,6 +239,7 @@ namespace KartGame.KartSystems
         private float accelVal = 0;
         private float brakeVal = 0;
         private float turnVal = 0;
+        private float cameraSwivel = 0;
 
         private int playerId = -1;
 

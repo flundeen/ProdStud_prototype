@@ -145,7 +145,7 @@ public class Bullet_Script : MonoBehaviour
             case AttackType.Lob:
                 rbody.useGravity = true; // Creates arc trajectory
                 lifeTime = 1000; // Need a better method for ending lob, lob lifetime is arc time + explosion time
-                rbody.AddForce(Mathf.Sin(direction) * speed, 5, Mathf.Cos(direction) * speed, ForceMode.Impulse);
+                rbody.AddForce(Mathf.Sin(direction) * speed, 10, Mathf.Cos(direction) * speed, ForceMode.Impulse);
                 break;
 
             case AttackType.Homing:

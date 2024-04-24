@@ -14,7 +14,7 @@ public class ArrowRotate : MonoBehaviour
         if (target != null)
         {
             Vector3 directionVector = target.position - transform.position;
-            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(directionVector.y, directionVector.x) * Mathf.Rad2Deg);
+            transform.eulerAngles = new Vector3(0, Mathf.Atan2(directionVector.z, directionVector.x) * Mathf.Rad2Deg, 0);
         }
 
         if (!GameManager.Instance.packageIsPresent)

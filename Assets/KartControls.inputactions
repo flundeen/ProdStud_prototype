@@ -92,17 +92,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3e6bc78c-c59b-4b91-8c7e-bd448ae91355",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "Accelerate",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "86575cb2-455b-4f8e-ae8e-f12410ecc9f6",
                     "path": "<Keyboard>/s",
                     "interactions": "",
@@ -114,8 +103,8 @@
                 },
                 {
                     "name": "",
-                    "id": "e03f6d91-b1ef-4c4b-9d9d-823ad185c45e",
-                    "path": "<Gamepad>/rightShoulder",
+                    "id": "139a9ea8-d7b4-4d2b-9680-e3314ca58945",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
@@ -191,8 +180,8 @@
                 },
                 {
                     "name": "",
-                    "id": "cef833eb-0786-4ff3-a51a-00cb496f1839",
-                    "path": "<Gamepad>/leftTrigger",
+                    "id": "3e6bc78c-c59b-4b91-8c7e-bd448ae91355",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
@@ -213,23 +202,12 @@
                 },
                 {
                     "name": "",
-                    "id": "139a9ea8-d7b4-4d2b-9680-e3314ca58945",
-                    "path": "<Gamepad>/leftShoulder",
+                    "id": "e03f6d91-b1ef-4c4b-9d9d-823ad185c45e",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller",
                     "action": "Gadget",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e2a8ff53-f6e3-48ec-92a9-671862e38dbd",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -240,6 +218,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KBM",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60632580-0e74-4151-bf50-f037b0ceed90",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -285,6 +274,17 @@
                     "processors": "",
                     "groups": "Controller",
                     "action": "Honk",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cef833eb-0786-4ff3-a51a-00cb496f1839",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Accelerate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
