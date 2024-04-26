@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public enum ScoreEvent
 {
@@ -26,6 +27,11 @@ public class GameManager : MonoBehaviour
     public List<ObjectivePickupZone> objPickupZones = new List<ObjectivePickupZone>();
     public List<ObjectiveDropoff> objDropoffZones = new List<ObjectiveDropoff>();
     public TMP_Text timerText;
+
+    public GameObject scoreScreen;
+    private bool isScoring = false;
+    private int scorePlayerIndex = 0;
+    private Timer scoreRevealTimer = new Timer(0.5f);
 
     void Awake()
     {
@@ -66,13 +72,35 @@ public class GameManager : MonoBehaviour
             if (gameTime <= 0)
                 EndGame();
         }
+        else if (isScoring)
+        {
+            // Display scores one at a time
+            if (scoreRevealTimer.Update(Time.deltaTime))
+            {
+                // If there are still player scores to reveal, reveal next player's score
+                if (scorePlayerIndex < PlayerInputManager.instance.playerCount)
+                {
+                    TextMeshPro scoreLabel = scoreScreen.transform.GetChild(++scorePlayerIndex).GetComponent<TextMeshPro>();
+                    scoreLabel.text = "Player " + scorePlayerIndex + ":   " + scores[scorePlayerIndex-1];
+                    scoreLabel.gameObject.SetActive(true);
+                    scoreRevealTimer.SetLength(0.25f);
+                    scoreRevealTimer.Start();
+                }
+                else
+                {
+                    // After all scores revealed, show menu button
+                    scoreScreen.transform.GetChild(scoreScreen.transform.childCount - 1).gameObject.SetActive(true);
+                    isScoring = false;
+                }
+            }
+        }
     }
 
     // Initialize game, enable movement and begin round
     public void StartGame()
     {
         // setup game here
-        gameTime = 300f; // 5 minutes
+        gameTime = 10f; // 5 minutes
 
 
     }
@@ -80,7 +108,10 @@ public class GameManager : MonoBehaviour
     // End round, stop game and disable movement
     public void EndGame()
     {
-
+        isScoring = true;
+        timerText.gameObject.SetActive(false);
+        scoreScreen.SetActive(true);
+        scoreRevealTimer.Start();
     }
 
     // Update target player's score based on event type

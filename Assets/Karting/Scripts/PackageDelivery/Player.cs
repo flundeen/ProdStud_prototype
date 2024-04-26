@@ -112,4 +112,9 @@ public class Player : MonoBehaviour
     {
         isSelectionConfirmed = !isSelectionConfirmed;
     }
+
+    void OnCancel()
+    {
+        // Player leave
+    }
 }
