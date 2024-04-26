@@ -156,6 +156,11 @@ public class PlayerManager : MonoBehaviour
 
     }
 
+    public void RemovePlayers()
+    {
+        // Delete players to remove cameras/inputs
+    }
+
     void OnPlayerJoined(PlayerInput pInput)
     {
         // Add Player component to static list
