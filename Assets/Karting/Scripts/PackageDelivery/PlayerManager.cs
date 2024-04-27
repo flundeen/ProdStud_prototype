@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
     // Fields
     private string sceneName;
     private PlayerInputManager inputManager;
+    private const string TITLE_SCENE_NAME = "IntroMenu";
     private const string SELECTION_SCENE_NAME = "Selection_Screen";
     private const string GAME_SCENE_NAME = "Game";
     private bool isGameLoading = false;
@@ -126,6 +127,12 @@ public class PlayerManager : MonoBehaviour
 
         switch (sceneName)
         {
+            case TITLE_SCENE_NAME:
+
+                // Should not be on title screen
+                Destroy(gameObject);
+                break;
+
             case SELECTION_SCENE_NAME:
 
                 // Check if all players are ready
@@ -151,14 +158,15 @@ public class PlayerManager : MonoBehaviour
             case GAME_SCENE_NAME:
                 break;
         }
-
-        // If Game:
-
     }
 
     public void RemovePlayers()
     {
-        // Delete players to remove cameras/inputs
+        // Delete player cars to remove cameras/inputs
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).GetComponentInChildren<ArcadeKart>().gameObject);
+        }
     }
 
     void OnPlayerJoined(PlayerInput pInput)
@@ -179,6 +187,8 @@ public class PlayerManager : MonoBehaviour
     {
         // Remove Player component from list
         Players.Remove(pInput.GetComponent<Player>());
+
+        if (sceneName != SELECTION_SCENE_NAME) return;
 
         // Remove leaving player from selection display
         // Shift players so empty selection display is after players

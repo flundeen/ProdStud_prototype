@@ -85,7 +85,7 @@ public class Player : MonoBehaviour
 
     void OnMenuToggle()
     {
-        EventManager.Instance.ToggleMenu();
+        //EventManager.Instance.ToggleMenu();
     }
 
     void OnSwitch(InputValue val)
@@ -116,5 +116,6 @@ public class Player : MonoBehaviour
     void OnCancel()
     {
         // Player leave
+        Destroy(gameObject);
     }
 }

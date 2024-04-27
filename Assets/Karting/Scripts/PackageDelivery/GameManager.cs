@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public List<ObjectiveDropoff> objDropoffZones = new List<ObjectiveDropoff>();
     public TMP_Text timerText;
 
+    // Score Screen Fields
     public GameObject scoreScreen;
     private bool isScoring = false;
     private int scorePlayerIndex = 0;
@@ -80,7 +81,7 @@ public class GameManager : MonoBehaviour
                 // If there are still player scores to reveal, reveal next player's score
                 if (scorePlayerIndex < PlayerInputManager.instance.playerCount)
                 {
-                    TextMeshPro scoreLabel = scoreScreen.transform.GetChild(++scorePlayerIndex).GetComponent<TextMeshPro>();
+                    TMP_Text scoreLabel = scoreScreen.transform.GetChild(++scorePlayerIndex).GetComponent<TextMeshProUGUI>();
                     scoreLabel.text = "Player " + scorePlayerIndex + ":   " + scores[scorePlayerIndex-1];
                     scoreLabel.gameObject.SetActive(true);
                     scoreRevealTimer.SetLength(0.25f);
@@ -100,7 +101,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         // setup game here
-        gameTime = 10f; // 5 minutes
+        gameTime = 2f; // 5 minutes
 
 
     }
@@ -108,6 +109,7 @@ public class GameManager : MonoBehaviour
     // End round, stop game and disable movement
     public void EndGame()
     {
+        PlayerManager.Instance.RemovePlayers();
         isScoring = true;
         timerText.gameObject.SetActive(false);
         scoreScreen.SetActive(true);

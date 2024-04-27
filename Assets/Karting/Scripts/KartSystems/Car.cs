@@ -245,6 +245,7 @@ namespace KartGame.KartSystems
 
         [SerializeField]
         private GameObject arrowPrefab;
+        private ArrowRotate arrow;
 
         //Package variables
         [SerializeField]
@@ -361,9 +362,9 @@ namespace KartGame.KartSystems
             kartPkg = GetComponent<KartPackage>();
             audioSrc = GetComponent<AudioSource>();
 
-            GameObject arrow = Instantiate(arrowPrefab);
-            arrow.GetComponent<ArrowRotate>().attachedKart = this.transform;
-            arrow.GetComponent<ArrowRotate>().kartPackage = kartPkg;
+            arrow = Instantiate(arrowPrefab).GetComponent<ArrowRotate>();
+            arrow.attachedKart = transform;
+            arrow.kartPackage = kartPkg;
         }
 
         void AddTrailToWheel(WheelCollider wheel)
@@ -793,6 +794,11 @@ namespace KartGame.KartSystems
             }
 
             ActivateDriftVFX(IsDrifting && GroundPercent > 0.0f);
+        }
+
+        private void OnDestroy()
+        {
+            Destroy(arrow.gameObject);
         }
 
         void OnAccelerate(InputValue val)
