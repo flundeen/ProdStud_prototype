@@ -7,11 +7,16 @@ public class Package : MonoBehaviour
 {
 
     private float timer = 5.0f;
+    private bool isPickupEnabled = false;
 
     // Update is called once per frame
     void Update()
     {
         timer -= Time.deltaTime;
+
+        // Allow time for dropping car to be moved away
+        if (timer <= 4.8f) isPickupEnabled = true;
+        
         if (timer <= 0f)
         {
             GameManager.Instance.packageIsPresent = false;
@@ -22,7 +27,7 @@ public class Package : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.tag == "Player" && !collision.GetComponentInParent<KartPackage>().hasPackage)
+        if (isPickupEnabled && collision.CompareTag("Player") && !collision.GetComponentInParent<KartPackage>().hasPackage)
         {
             collision.GetComponentInParent<KartPackage>().hasPackage = true;
             GameManager.Instance.packagePickedUp = true;

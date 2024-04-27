@@ -254,6 +254,7 @@ namespace KartGame.KartSystems
         private GameObject droppedPackage;
         private float packageTimer = 20f;
         public bool HasPackage { get { return kartPkg.hasPackage; } }
+        public float PackageCountdown { get { return packageTimer; } }
 
         // Audio Fields
         private AudioSource audioSrc;
@@ -508,7 +509,8 @@ namespace KartGame.KartSystems
             // Drop package if carrying one
             if (kartPkg.hasPackage)
             {
-                GameObject dropped = Instantiate(droppedPackage, kartVisual.transform.position, kartVisual.transform.rotation);
+                kartPkg.hasPackage = false;
+                GameObject dropped = Instantiate(droppedPackage, transform.position + Vector3.up, transform.rotation);
                 GameManager.Instance.packageHolder = dropped.transform;
                 GameManager.Instance.packagePickedUp = false;
                 package.GetComponent<Renderer>().enabled = false;

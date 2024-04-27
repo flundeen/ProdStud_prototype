@@ -11,6 +11,7 @@ public class PlayerUI : MonoBehaviour
     public ArcadeKart car;
     public Image healthBar;
     public TMP_Text scoreLabel;
+    public TMP_Text pkgTimerLabel;
 
     // Fields
     private float maxHealthWidth;
@@ -32,5 +33,14 @@ public class PlayerUI : MonoBehaviour
 
         // Update score label to player's current score
         scoreLabel.text = GameManager.Instance.scores[car.playerId].ToString();
+
+        // Update package timer while carrying package
+        if (car.HasPackage)
+        {
+            pkgTimerLabel.gameObject.SetActive(true);
+            pkgTimerLabel.text = Mathf.Ceil(car.PackageCountdown).ToString();
+        }
+        else
+            pkgTimerLabel.gameObject.SetActive(false);
     }
 }

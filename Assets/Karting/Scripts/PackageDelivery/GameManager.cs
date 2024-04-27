@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         // setup game here
-        gameTime = 2f; // 5 minutes
+        gameTime = 300f; // 5 minutes
 
 
     }
