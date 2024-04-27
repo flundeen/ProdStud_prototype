@@ -172,6 +172,7 @@ public class PlayerManager : MonoBehaviour
         // Connect to selection display
         displays[pInput.playerIndex].player = pInput.GetComponent<Player>();
         displays[pInput.playerIndex].gameObject.SetActive(true);
+        displays[pInput.playerIndex].player.isSelectionConfirmed = false;
     }
 
     void OnPlayerLeft(PlayerInput pInput)

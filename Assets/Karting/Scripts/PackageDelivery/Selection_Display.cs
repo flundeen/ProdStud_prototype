@@ -58,6 +58,7 @@ public class Selection_Display : MonoBehaviour
         weight_val_text.text = "3";
         DisplayCar = PizzaCar;
         DisplayCar.SetActive(true);
+        player.isSelectionConfirmed = false;
     }
 
     // Update is called once per frame
