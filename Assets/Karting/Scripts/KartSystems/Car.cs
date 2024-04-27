@@ -241,7 +241,7 @@ namespace KartGame.KartSystems
         private float turnVal = 0;
         private float cameraSwivel = 0;
 
-        private int playerId = -1;
+        public int playerId = -1;
 
         [SerializeField]
         private GameObject arrowPrefab;
@@ -462,11 +462,13 @@ namespace KartGame.KartSystems
             }
         }
 
-        public void SendInputs(InputData inputs)
+        public void SetTransform(Transform t)
         {
-            Input = inputs;
-            WantsToDrift = Input.Braking > 0 && Vector3.Dot(Rigidbody.velocity, transform.forward) > 0.0f;
+            transform.SetPositionAndRotation(t.position, t.rotation);
+            Rigidbody.position = t.position;
+            Rigidbody.rotation = t.rotation;
         }
+
         void OnHonk()
         {
             if (audioSrc != null && honkSFX != null)
@@ -798,7 +800,8 @@ namespace KartGame.KartSystems
 
         private void OnDestroy()
         {
-            Destroy(arrow.gameObject);
+            if (arrow != null)
+                Destroy(arrow.gameObject);
         }
 
         void OnAccelerate(InputValue val)

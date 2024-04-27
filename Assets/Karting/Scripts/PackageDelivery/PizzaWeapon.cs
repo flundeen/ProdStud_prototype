@@ -14,7 +14,13 @@ public class PizzaWeapon : Weapon
     public ArcadeKart.Stats speedBoostEffect = new ArcadeKart.Stats
     {
         Acceleration = 15f,
-        TopSpeed = 20f
+        TopSpeed = 20f,
+        Steer = 3f,
+        subStats =
+        {
+            ReverseAcceleration = 15f,
+            ReverseSpeed = 20f
+        }
     };
     private bool isBoostActive = false;
 

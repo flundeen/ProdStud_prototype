@@ -89,6 +89,10 @@ public class Bullet_Script : MonoBehaviour
             }
         }
 
+        // Stop any shoot SFX
+        if (audioSrc != null)
+            audioSrc.Stop();
+
         // Collision behavior based on attack type
         switch (attackInfo.type)
         {

@@ -44,7 +44,8 @@ public class Player : MonoBehaviour
         this.car = car;
         camera = car.camera;
         pInput.camera = camera;
-        car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        Debug.Log(spawnPoint.position);
+        car.SetTransform(spawnPoint);
 
         // Hook car death to player death event
         car.deathCallback += (int attackerId) =>
@@ -76,16 +77,17 @@ public class Player : MonoBehaviour
     {
         // Reset player data
         spawnPoint = spawn;
-        car.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        Debug.Log(spawn.position);
+        car.SetTransform(spawn);
         car.ResetCar();
         weapon.ResetWeapons();
         weapon.enabled = true;
         isAlive = true;
     }
 
-    void OnMenuToggle()
+    void OnMenu()
     {
-        //EventManager.Instance.ToggleMenu();
+        EventManager.Instance.QuitToMenu();
     }
 
     void OnSwitch(InputValue val)

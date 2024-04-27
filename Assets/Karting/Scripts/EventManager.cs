@@ -103,10 +103,9 @@ public class EventManager : MonoBehaviour
         players[playerId].Respawn(spawnPoint);
     }
 
-    public void ToggleMenu()
+    public void QuitToMenu()
     {
-        if (gameMenuManager != null)
-            gameMenuManager.ToggleMenu();
+        GetComponent<SceneChanger>().ChangeScene("IntroMenu");
     }
 }
 
